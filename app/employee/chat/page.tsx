@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -47,6 +47,7 @@ import {
   Plus,
 } from "lucide-react";
 import { useAuth } from '@/contexts/auth-context';
+import { useNavigationGuard } from '@/contexts/navigation-guard-context';
 import { toast } from "sonner";
 import type { ChatMessage } from "@/types/index";
 import ReactMarkdown from "react-markdown";
@@ -261,6 +262,7 @@ const thinkingMessages = [
 
 export default function EmployeeChatPage() {
   const { user, loading: userLoading } = useAuth();
+  const { registerGuard } = useNavigationGuard();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -331,6 +333,13 @@ export default function EmployeeChatPage() {
   // File upload state
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
+  // Navigation guard state
+  const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
+  const [showNavGuardModal, setShowNavGuardModal] = useState(false);
+
+  // Derived: guard is active when session has 6+ messages and hasn't ended
+  const isGuardActive = messages.length >= 6 && !sessionEnded;
+
   // Greeting dialog state
   const [showGreetingDialog, setShowGreetingDialog] = useState(false);
   const [greetingShown, setGreetingShown] = useState(false);
@@ -359,48 +368,74 @@ export default function EmployeeChatPage() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Custom navigation handler that deactivates avatar before navigating
+  // Custom navigation handler — intercepts navigation when guard is active
   const handleNavigation = (path: string) => {
-    // Immediately deactivate avatar and navigate - don't wait for cleanup
+    if (isGuardActive) {
+      // Guard is active: show confirmation modal (ignore if already open)
+      if (!showNavGuardModal) {
+        setPendingNavigation(path);
+        setShowNavGuardModal(true);
+      }
+      return;
+    }
+    // Guard is not active: deactivate avatar if needed and navigate immediately
     if (isAvatarMode) {
       setIsAvatarMode(false);
     }
-    // Navigate immediately - React will handle cleanup during unmount
     router.push(path);
   };
 
-  // Cleanup avatar on navigation - don't block navigation
+  // End conversation and then navigate to the intercepted destination
+  const handleNavGuardLeave = async () => {
+    setShowNavGuardModal(false);
+    const destination = pendingNavigation;
+    setPendingNavigation(null);
+    if (isAvatarMode) setIsAvatarMode(false);
+    // Generate the wellness report first, then navigate
+    await handleEndSession();
+    if (destination) {
+      router.push(destination);
+    }
+  };
+
+  // Cancel leaving: close modal and stay on the chat page
+  const handleNavGuardStay = () => {
+    setShowNavGuardModal(false);
+    setPendingNavigation(null);
+  };
+
+  // Register/remove beforeunload listener based on guard active state
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isAvatarMode) {
-        setIsAvatarMode(false);
-        // Note: Modern browsers ignore custom messages in beforeunload
-        e.preventDefault();
-        e.returnValue = '';
-      }
+      e.preventDefault();
+      e.returnValue = '';
     };
 
-    // Listen for route changes to deactivate avatar
-    const handleRouteChange = () => {
-      if (isAvatarMode) {
-        setIsAvatarMode(false);
-      }
-    };
+    if (isGuardActive) {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    
-    // Use Next.js router events if available, otherwise just cleanup on unmount
-    const cleanup = () => {
-      if (isAvatarMode) {
-        setIsAvatarMode(false);
-      }
-    };
-    
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
-      cleanup();
     };
-  }, [isAvatarMode]);
+  }, [isGuardActive]);
+
+  // Register navigation guard with the context so sidebar links are intercepted
+  useEffect(() => {
+    if (!isGuardActive) return;
+
+    const cleanup = registerGuard((destination: string) => {
+      // Block navigation and show the confirmation modal
+      if (!showNavGuardModal) {
+        setPendingNavigation(destination);
+        setShowNavGuardModal(true);
+      }
+      return false; // block
+    });
+
+    return cleanup;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isGuardActive, registerGuard]);
 
   const audioRecorderRef = useRef<AudioRecorder>(new AudioRecorder());
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
@@ -1330,7 +1365,7 @@ export default function EmployeeChatPage() {
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <Sparkles className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">Wellness Assistant</span>
+                {/* <span className="text-sm font-semibold text-gray-800 dark:text-gray-100">Wellness Assistant</span> */}
               </div>
 
               <div className="flex items-center gap-2">
@@ -1801,9 +1836,7 @@ export default function EmployeeChatPage() {
                   <Phone className="h-5 w-5 text-white" strokeWidth={2.5} />
                 </button>
               </div>
-                <div className="px-3 py-1.5 text-center text-xs text-gray-600">
-   AI-generated content may contain errors. Review carefully before relying on it.
- </div>
+
             </div>
 
 
@@ -2294,6 +2327,46 @@ export default function EmployeeChatPage() {
                 Start Conversation
               </button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Navigation Guard Confirmation Modal */}
+      <Dialog
+        open={showNavGuardModal}
+        onOpenChange={(open) => {
+          if (!open) handleNavGuardStay();
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>End conversation before leaving?</DialogTitle>
+            <DialogDescription>
+              You have an active conversation. End it now to generate your
+              wellness report, or stay to continue chatting.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-3 pt-2">
+            <Button variant="outline" onClick={handleNavGuardStay} disabled={loading}>
+              Stay
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleNavGuardLeave}
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Generating report...
+                </>
+              ) : (
+                <>
+                  <PhoneOff className="h-5 w-5 mr-2" />
+                  End Conversation
+                </>
+              )}
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

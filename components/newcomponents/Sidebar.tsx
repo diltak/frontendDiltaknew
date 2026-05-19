@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ChevronLeft, ChevronRight, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useNavigationGuard } from '@/contexts/navigation-guard-context';
 
 export interface NavItem {
   label: string;
@@ -36,15 +37,28 @@ function SidebarItem({
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
+  const { checkGuard } = useNavigationGuard();
   const isActive = item.exact
     ? pathname === item.path
     : pathname === item.path || pathname.startsWith(item.path + '/');
   const Icon = item.icon;
 
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // If a guard is registered and blocks navigation, prevent the link
+      if (!checkGuard(item.path)) {
+        e.preventDefault();
+        return;
+      }
+      onNavigate?.();
+    },
+    [checkGuard, item.path, onNavigate]
+  );
+
   return (
     <Link
       href={item.path}
-      onClick={onNavigate}
+      onClick={handleClick}
       prefetch={true}
       title={collapsed ? item.label : undefined}
       aria-current={isActive ? 'page' : undefined}
