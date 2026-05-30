@@ -1,49 +1,33 @@
 /**
- * Proxy → Uma Python backend GET /debug/session/:sessionId
- * Fetches full debug state for a session including memories, test state, catalog, etc.
+ * Proxy → Uma backend GET /debug/session/{sessionId}
+ * No auth required on this endpoint per the API docs.
  */
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = process.env.UMA_API_URL || 'http://74.162.66.197';
+const BACKEND = (process.env.UMA_API_URL ?? process.env.NEXT_PUBLIC_UMA_API_URL ?? 'http://127.0.0.1:8000').replace(/\/+$/, '');
 
 export async function GET(
   _request: NextRequest,
-  { params }: { params: Promise<{ sessionId: string }> }
+  { params }: { params: { sessionId: string } }
 ) {
+  const { sessionId } = params;
+  if (!sessionId) {
+    return NextResponse.json({ error: 'sessionId required' }, { status: 400 });
+  }
+
   try {
-    const { sessionId } = await params;
-
-    if (!sessionId) {
-      return NextResponse.json({ error: 'sessionId is required' }, { status: 400 });
-    }
-
     const res = await fetch(`${BACKEND}/debug/session/${sessionId}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!res.ok) {
-      // Return empty debug data if endpoint doesn't exist
-      return NextResponse.json({
-        memories: [],
-        last_pipeline: {},
-        assessment: null,
-        test_history: [],
-        available_tests: {},
-      }, { status: 200 });
+      return NextResponse.json({ error: `upstream ${res.status}` }, { status: res.status });
     }
 
     const data = await res.json();
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(data);
   } catch (err: any) {
     console.error('[uma/debug proxy]', err.message);
-    // Return empty debug data on error (non-critical)
-    return NextResponse.json({
-      memories: [],
-      last_pipeline: {},
-      assessment: null,
-      test_history: [],
-      available_tests: {},
-    }, { status: 200 });
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

@@ -1,15 +1,23 @@
 /**
- * Proxy → Uma Python backend POST /chat
- * New Saathi conversational endpoint (full pipeline with RAG + memory).
+ * Proxy → Uma backend POST /chat
+ * Requires HTTPBearer auth — forwards the user's JWT from the Authorization header.
  *
- * Input:  { message: string, session_id?: string, user_id?: string }
- * Output: full Uma response including pipeline debug fields:
- *   { response, session_id, emotion, subtext, route, strategy,
- *     phase, pipeline_steps, memories, rag_chunks, ... }
+ * Input:  { message: string, session_id?: string }
+ * Output: ChatResponse { session_id, reply, peek, mesh, strategy,
+ *                        expression_style, retrieved_context,
+ *                        total_memories, trigger_reason,
+ *                        test_state, test_history }
+ *
+ * NOTE: Uses UMA_API_URL (server-side only, no NEXT_PUBLIC_ prefix) because
+ * this runs in a Next.js API route (Node.js), not in the browser.
+ * ServerAddress uses NEXT_PUBLIC_UMA_API_URL which is the same value but
+ * exposed to the browser — we deliberately keep the server-side key separate.
  */
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = process.env.UMA_API_URL || 'http://74.162.66.197';
+// Server-side: UMA_API_URL (not exposed to browser)
+// Falls back to the same value as NEXT_PUBLIC_UMA_API_URL for convenience
+const BACKEND = (process.env.UMA_API_URL ?? process.env.NEXT_PUBLIC_UMA_API_URL ?? 'http://127.0.0.1:8000').replace(/\/+$/, '');
 
 export async function POST(request: NextRequest) {
   try {
@@ -29,11 +37,9 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({
         message: body.message,
         session_id: body.session_id ?? null,
-        user_id: body.user_id ?? null,
       }),
     });
 
-    // Pass through the full response — includes pipeline debug fields
     const data = await res.json();
     return NextResponse.json(data, { status: res.status });
   } catch (err: any) {

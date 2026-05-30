@@ -1,12 +1,7 @@
-/**
- * Proxy → Python backend POST /api/chat_wrapper/ai-chat
- * Deep conversation mode — GPT-4, no-AI-identity persona.
- * Input:  { message, user_id?, session_id?, context? }
- * Output: { response, session_id, user_id }
- */
+
+import ServerAddress from '@/constent/ServerAddress';
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = process.env.UMA_API_URL || 'http://74.162.66.197';
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'message is required' }, { status: 400 });
     }
 
-    const res = await fetch(`${BACKEND}/api/chat_wrapper/ai-chat`, {
+    const res = await fetch(`${ServerAddress}/api/chat_wrapper/ai-chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),

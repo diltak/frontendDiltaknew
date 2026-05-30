@@ -357,7 +357,7 @@ export default function NewSaathiPage() {
 
   // ── Thinking message cycling ─────────────────────────────────────────────
   useEffect(() => {
-    if (!loading) { setThinkIdx(0); setActiveSteps([]); return; }
+    if (!loading && !isStreaming) { setThinkIdx(0); setActiveSteps([]); return; }
     const id = setInterval(() => setThinkIdx(p => (p + 1) % THINKING_MSGS.length), 2500);
     const allSteps = [...PIPELINE_STEPS_1, ...PIPELINE_STEPS_2].map(s => s.key);
     let i = 0;
@@ -366,7 +366,7 @@ export default function NewSaathiPage() {
       if (i >= allSteps.length) clearInterval(stepId);
     }, 400);
     return () => { clearInterval(id); clearInterval(stepId); };
-  }, [loading]);
+  }, [loading, isStreaming]);
 
   // ── beforeunload guard ───────────────────────────────────────────────────
   useEffect(() => {
@@ -773,14 +773,57 @@ export default function NewSaathiPage() {
         return;
       }
 
-      // SSE streaming path
-      const res = await fetch("/api/uma/chat/stream", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, session_id: sessionId, user_id: user?.id ?? null, uma_session_id: umaSessionId }),
-      });
+      // SSE streaming path — falls back to regular POST if stream not supported
+      let res: Response;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+      const authHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      };
+      try {
+        res = await fetch("/api/uma/chat/stream", {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({ message: trimmed, session_id: sessionId }),
+        });
+      } catch {
+        // Network error on stream endpoint — fall back to regular endpoint
+        res = await fetch("/api/uma/chat", {
+          method: "POST",
+          headers: authHeaders,
+          body: JSON.stringify({ message: trimmed, session_id: sessionId }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        const reply = data.reply ?? data.response ?? data.message ?? "I'm here for you.";
+        if (data.session_id && !sessionId) setSessionId(data.session_id);
+        const debug = extractDebug(data);
+        setLatestDebug(debug);
+        setLastAIMessage(reply);
+        addMessage("assistant", reply, debug);
+        handleAvatarAndVoice(reply, data);
+        setStreamingReply("");
+        refreshDebug(data.session_id);
+        return;
+      }
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // Check if the response is SSE or plain JSON
+      const contentType = res.headers.get("content-type") || "";
+      if (!res.ok || !contentType.includes("text/event-stream")) {
+        // Not a stream — parse as regular JSON
+        const data = await res.json().catch(() => ({}));
+        const reply = data.reply ?? data.response ?? data.message ?? "I'm here for you.";
+        if (data.session_id && !sessionId) setSessionId(data.session_id);
+        const debug = extractDebug(data);
+        setLatestDebug(debug);
+        setLastAIMessage(reply);
+        addMessage("assistant", reply, debug);
+        handleAvatarAndVoice(reply, data);
+        setStreamingReply("");
+        refreshDebug(data.session_id);
+        return;
+      }
+
       if (!res.body) throw new Error("No response body");
 
       const reader = res.body.getReader();
@@ -832,8 +875,31 @@ export default function NewSaathiPage() {
       handleAvatarAndVoice(reply, data);
       setStreamingReply("");
       refreshDebug(data.uma_session_id || data.session_id);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("[new-saathi sendMessage]", err);
+      // Last-resort fallback: try the regular (non-streaming) endpoint
+      try {
+        const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+        const fallback = await fetch("/api/uma/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ message: trimmed, session_id: sessionId }),
+        });
+        if (fallback.ok) {
+          const data = await fallback.json();
+          const reply = data.reply ?? data.response ?? data.message ?? "I'm here for you.";
+          if (data.session_id && !sessionId) setSessionId(data.session_id);
+          const debug = extractDebug(data);
+          setLatestDebug(debug);
+          setLastAIMessage(reply);
+          addMessage("assistant", reply, debug);
+          handleAvatarAndVoice(reply, data);
+          return;
+        }
+      } catch (_) {}
       addMessage("assistant", "I'm having trouble connecting right now. Please try again.");
     } finally {
       setLoading(false);
@@ -844,24 +910,25 @@ export default function NewSaathiPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, sessionEnded, sessionId, umaSessionId, user, addMessage, attachedFiles, refreshDebug]);
 
-  // Helper: extract debug fields from response data
+  // Helper: extract debug fields from ChatResponse
   function extractDebug(data: any): UmaDebug {
+    const peek = data.peek || {};
+    const mesh = data.mesh || {};
     return {
-      emotion: data.emotion ?? data.detected_emotion ?? data.peek?.emotion,
-      emotion_intensity: data.emotion_intensity ?? data.peek?.emotion_intensity,
-      tone_shift: data.tone_shift ?? data.peek?.tone_shift,
-      deep_need: data.deep_need ?? data.peek?.deep_need,
-      query_type: data.query_type ?? data.peek?.query_type,
-      subtext: data.subtext ?? data.detected_subtext ?? data.peek?.subtext,
-      route: data.route ?? data.selected_route ?? data.test_state?.conversation_route,
-      route_detail: data.route_detail ?? data.test_state?.route_detail,
-      strategy: data.strategy ?? data.response_strategy,
+      emotion: peek.emotion,
+      emotion_intensity: peek.emotion_intensity,
+      tone_shift: peek.tone_shift,
+      deep_need: peek.deep_need,
+      query_type: peek.query_type,
+      subtext: peek.subtext,
+      phase: peek.conversation_phase,
+      route: data.test_state?.conversation_route,
+      route_detail: data.test_state?.route_detail,
+      strategy: data.strategy,
       expression_style: data.expression_style,
-      phase: data.phase ?? data.conversation_phase ?? data.peek?.conversation_phase,
       trigger_reason: data.trigger_reason,
-      pipeline_steps: data.pipeline_steps ?? data.steps_completed,
-      memories: data.memories ?? data.retrieved_memories,
-      rag_chunks: data.rag_chunks ?? data.retrieved_chunks ?? data.retrieved_context,
+      memories: mesh.recalled_memories?.map((m: string) => ({ content: m })),
+      rag_chunks: data.retrieved_context?.map((c: string) => ({ content: c })),
       test_state: data.test_state,
       test_history: data.test_history,
     };
@@ -1220,20 +1287,28 @@ export default function NewSaathiPage() {
 
           {/* Streaming thinking indicator (no reply text yet, no pipeline events) */}
           {isStreaming && !streamingReply && Object.keys(pipelineNodeStates).length === 0 && (
-            <div className="flex justify-start">
+            <div className="flex justify-start mb-4">
               <div className="flex items-end gap-2">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-sm">
                   <Brain className="h-3.5 w-3.5 text-white" />
                 </div>
-                <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm px-4 py-3 border border-gray-100 dark:border-gray-700 shadow-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl rounded-bl-sm px-4 py-3 border border-gray-100 dark:border-gray-700 shadow-sm min-w-[200px]">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex gap-1">
+                    <div className="flex items-center gap-1">
                       {[0, 1, 2].map(i => (
-                        <motion.span key={i} className="block w-1.5 h-1.5 rounded-full bg-violet-400"
-                          animate={{ y: [0, -5, 0] }} transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15 }} />
+                        <motion.span key={i} className="block w-2 h-2 rounded-full bg-violet-400"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{ duration: 0.7, repeat: Infinity, delay: i * 0.15, ease: "easeInOut" }} />
                       ))}
                     </div>
-                    <span className="text-xs text-gray-400 font-medium">Connecting to Uma…</span>
+                    <AnimatePresence mode="wait">
+                      <motion.span key={thinkIdx}
+                        initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.25 }}
+                        className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap font-medium">
+                        {THINKING_MSGS[thinkIdx]}
+                      </motion.span>
+                    </AnimatePresence>
                   </div>
                 </div>
               </div>

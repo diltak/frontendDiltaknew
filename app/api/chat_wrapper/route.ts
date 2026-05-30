@@ -1,10 +1,7 @@
-/**
- * Proxy → Python backend POST /api/chat_wrapper
- * Returns { type: "message", data: {...} } | { type: "report", data: {...} } | { type: "assessment_questions", data: {...} }
- */
+
+import ServerAddress from '@/constent/ServerAddress';
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = process.env.UMA_API_URL || 'http://74.162.66.197';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +21,7 @@ export async function POST(request: NextRequest) {
       headers['Content-Type'] = 'application/json';
     }
 
-    const res = await fetch(`${BACKEND}/api/chat_wrapper`, {
+    const res = await fetch(`${ServerAddress}/api/chat_wrapper`, {
       method: 'POST',
       headers,
       body,
