@@ -246,3 +246,289 @@ export interface AskResponse {
   confidence: number;
   disclaimer: string;
 }
+
+// ─── Profile ─────────────────────────────────────────────────────────────────
+
+export type SexType = 'male' | 'female' | 'other' | 'prefer_not_to_say';
+export type BloodGroup = 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-' | 'unknown';
+export type SmokingStatus = 'never' | 'former' | 'current' | 'occasional';
+export type ActivityLevel = 'sedentary' | 'lightly_active' | 'moderately_active' | 'very_active' | 'athlete';
+export type Chronotype = 'early_bird' | 'night_owl' | 'intermediate';
+
+export interface FamilyHistory {
+  diabetes?: boolean;
+  heart_disease?: boolean;
+  hypertension?: boolean;
+  cancer?: boolean;
+  thyroid?: boolean;
+  mental_illness?: boolean;
+}
+
+export interface PhysicalHealthProfileRequest {
+  dob?: string;
+  sex?: SexType;
+  height_cm?: number;
+  weight_kg?: number;
+  blood_group?: BloodGroup;
+  chronic_conditions?: string[];
+  medications?: string[];
+  allergies?: string[];
+  family_history?: FamilyHistory;
+  smoking_status?: SmokingStatus;
+  activity_level?: ActivityLevel;
+  chronotype?: Chronotype;
+}
+
+export interface PhysicalHealthProfileResponse {
+  profile_id: string;
+  dob?: string | null;
+  sex?: SexType | null;
+  height_cm?: number | null;
+  weight_kg?: number | null;
+  bmi?: number | null;
+  bmi_category?: string | null;
+  blood_group?: BloodGroup | null;
+  chronic_conditions: string[];
+  medications: string[];
+  allergies: string[];
+  family_history: FamilyHistory;
+  smoking_status?: SmokingStatus | null;
+  activity_level?: ActivityLevel | null;
+  chronotype?: Chronotype | null;
+  updated_at: string;
+}
+
+// ─── Vitals ──────────────────────────────────────────────────────────────────
+
+export type VitalType = 'bp' | 'blood_sugar' | 'heart_rate' | 'weight' | 'spo2';
+export type VitalContext = 'fasting' | 'post_meal' | 'resting' | 'post_exercise';
+export type AlertTier = 'normal' | 'warning' | 'critical';
+
+export interface VitalLogRequest {
+  vital_type: VitalType;
+  value_primary: number;
+  value_secondary?: number;
+  context?: VitalContext;
+  measured_at?: string;
+}
+
+export interface VitalLogResponse {
+  log_id: string;
+  vital_type: VitalType;
+  value_primary: number;
+  value_secondary?: number | null;
+  unit: string;
+  context?: VitalContext | null;
+  alert_tier: AlertTier;
+  alert_message?: string | null;
+  measured_at: string;
+}
+
+export interface VitalLatestItem {
+  vital_type: VitalType;
+  value_primary: number;
+  value_secondary?: number | null;
+  unit: string;
+  alert_tier: AlertTier;
+  measured_at: string;
+  days_ago: number;
+}
+
+export interface VitalReading {
+  log_id: string;
+  value_primary: number;
+  value_secondary?: number | null;
+  context?: string | null;
+  alert_tier: AlertTier;
+  measured_at: string;
+}
+
+export interface VitalTrendResponse {
+  vital_type: VitalType;
+  period: string;
+  readings: VitalReading[];
+  latest_alert: AlertTier;
+  trend: string;
+  count: number;
+}
+
+// ─── Hydration ───────────────────────────────────────────────────────────────
+
+export type BeverageType = 'water' | 'tea' | 'coffee' | 'juice' | 'other';
+
+export interface HydrationLogRequest {
+  amount_ml: number;
+  beverage_type?: BeverageType;
+  logged_at?: string;
+}
+
+export interface HydrationLog {
+  log_id: string;
+  amount_ml: number;
+  beverage_type: BeverageType;
+  effective_ml: number;
+  logged_at: string;
+}
+
+export interface HydrationTodayResponse {
+  total_ml: number;
+  target_ml: number;
+  effective_ml: number;
+  percentage: number;
+  on_track: boolean;
+  beverage_breakdown: Record<string, number>;
+  logs: HydrationLog[];
+}
+
+// ─── Sleep ───────────────────────────────────────────────────────────────────
+
+export interface SleepLogRequest {
+  bedtime: string;
+  wake_time: string;
+  quality_score: number;
+  interruptions?: number;
+  dream_recall?: boolean;
+  notes?: string;
+}
+
+export interface SleepLogResponse {
+  log_id: string;
+  bedtime: string;
+  wake_time: string;
+  duration_hours: number;
+  quality_score: number;
+  sleep_score: number;
+  debt_hours: number;
+  logged_at: string;
+}
+
+export interface SleepLogItem {
+  log_id: string;
+  bedtime: string;
+  wake_time: string;
+  duration_hours: number;
+  quality_score: number;
+  sleep_score: number;
+  logged_at: string;
+}
+
+export interface SleepTrendsResponse {
+  period: string;
+  avg_duration: number;
+  avg_quality: number;
+  avg_score: number;
+  weekly_debt_hours: number;
+  chronotype?: string | null;
+  logs: SleepLogItem[];
+}
+
+// ─── Movement ────────────────────────────────────────────────────────────────
+
+export type MovementActivityType = 'walk' | 'run' | 'gym' | 'yoga' | 'sport' | 'desk_stretch' | 'other';
+export type MovementIntensity = 'low' | 'moderate' | 'high';
+
+export interface MovementLogRequest {
+  activity_type: MovementActivityType;
+  duration_min: number;
+  intensity?: MovementIntensity;
+  steps?: number;
+  notes?: string;
+  logged_at?: string;
+}
+
+export interface MovementWeeklyResponse {
+  week_start: string;
+  total_minutes: number;
+  med_target_min: number;
+  on_track: boolean;
+  active_days: number;
+  total_steps: number;
+  activity_breakdown: Record<string, number>;
+}
+
+// ─── Energy ──────────────────────────────────────────────────────────────────
+
+export type TimeOfDay = 'morning' | 'afternoon' | 'evening';
+
+export interface EnergyLogRequest {
+  energy_level: number;
+  focus_level: number;
+  time_of_day: TimeOfDay;
+  notes?: string;
+}
+
+export interface EnergyLogItem {
+  log_id: string;
+  energy_level: number;
+  focus_level: number;
+  time_of_day: TimeOfDay;
+  notes?: string | null;
+  logged_at: string;
+}
+
+export interface EnergyTodayResponse {
+  date: string;
+  logs: EnergyLogItem[];
+  avg_energy: number;
+  avg_focus: number;
+  pattern?: string | null;
+}
+
+// ─── Stress ──────────────────────────────────────────────────────────────────
+
+export type TensionArea = 'head' | 'neck' | 'shoulders' | 'chest' | 'gut' | 'back' | 'legs';
+export type BreathingExerciseType = '4_7_8' | 'box' | 'deep';
+
+export interface StressBodyScanRequest {
+  tension_areas: TensionArea[];
+  overall_tension: number;
+  notes?: string;
+}
+
+export interface StressBodyScanResponse {
+  log_id: string;
+  tension_areas: TensionArea[];
+  overall_tension: number;
+  insight?: string | null;
+  logged_at: string;
+}
+
+export interface StressBreathingRequest {
+  exercise_type?: BreathingExerciseType;
+  cycles?: number;
+}
+
+export interface StressBreathingResponse {
+  session_id: string;
+  exercise_type: BreathingExerciseType;
+  cycles: number;
+  duration_seconds: number;
+  completed_at: string;
+  message?: string | null;
+}
+
+// ─── Preventive ──────────────────────────────────────────────────────────────
+
+export interface PreventiveScreeningLogRequest {
+  screening_type: string;
+  date_done: string;
+  result_summary?: string;
+  next_due?: string;
+  provider?: string;
+}
+
+export interface PreventiveCalendarItem {
+  screening_type: string;
+  display_name: string;
+  recommended_freq: string;
+  last_done?: string | null;
+  next_due?: string | null;
+  overdue: boolean;
+  notes?: string | null;
+}
+
+export interface PreventiveCalendarResponse {
+  screenings: PreventiveCalendarItem[];
+  overdue_count: number;
+  due_soon_count: number;
+}
