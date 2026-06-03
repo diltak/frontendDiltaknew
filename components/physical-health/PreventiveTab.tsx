@@ -93,7 +93,7 @@ export default function PreventiveTab() {
       {/* Log button */}
       <div className="flex justify-end">
         <button onClick={() => setShowForm(v => !v)} className="inline-flex items-center gap-2 rounded-lg border border-primary bg-primary/10 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/20 transition-colors">
-          <Plus className="h-4 w-4" />{showForm ? "Cancel" : "Log Screening"}
+          <Plus className="h-5 w-5" />{showForm ? "Cancel" : "Log Screening"}
         </button>
       </div>
 
@@ -125,7 +125,7 @@ export default function PreventiveTab() {
           </div>
           <div className="flex justify-end">
             <button type="submit" disabled={submitting} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60">
-              {submitting ? <><Loader2 className="h-4 w-4 animate-spin" />Saving…</> : <><CalendarCheck className="h-4 w-4" />Save</>}
+              {submitting ? <><Loader2 className="h-5 w-5 animate-spin" />Saving…</> : <><CalendarCheck className="h-5 w-5" />Save</>}
             </button>
           </div>
         </form>

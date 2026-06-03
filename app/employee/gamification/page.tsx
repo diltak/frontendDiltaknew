@@ -82,7 +82,7 @@ function StatCard({ icon: Icon, label, value, sub, iconBg, iconText }: {
       className="bg-white dark:bg-gray-900 rounded-card border border-neutral-200 dark:border-gray-800 p-4 flex flex-col gap-2 shadow-sm"
     >
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${iconBg}`}>
-        <Icon className={`h-4 w-4 ${iconText}`} />
+        <Icon className={`h-5 w-5 ${iconText}`} />
       </div>
       <p className="text-2xl font-black text-txt-headings dark:text-white leading-none">{value}</p>
       <p className="text-caption-semibold text-txt-disabled uppercase tracking-wide">{label}</p>
@@ -308,7 +308,7 @@ function GamificationPage() {
               <div className="bg-white dark:bg-gray-900 rounded-card-lg border border-neutral-200 dark:border-gray-800 p-5 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-s-semibold text-txt-headings dark:text-white flex items-center gap-2">
-                    <Medal className="h-4 w-4 text-warning-bold" /> Recent Badges
+                    <Medal className="h-5 w-5 text-warning-bold" /> Recent Badges
                   </h3>
                   <button onClick={() => setTab('Badges')} className="text-caption text-brand-500 hover:text-brand-600 flex items-center gap-0.5 transition-colors">
                     All badges <ChevronRight className="h-3 w-3" />
@@ -335,7 +335,7 @@ function GamificationPage() {
             {/* Goals */}
             <div className="bg-white dark:bg-gray-900 rounded-card-lg border border-neutral-200 dark:border-gray-800 p-5 space-y-4 shadow-sm">
               <h3 className="text-s-semibold text-txt-headings dark:text-white flex items-center gap-2">
-                <Target className="h-4 w-4 text-brand-500" /> Goals
+                <Target className="h-5 w-5 text-brand-500" /> Goals
               </h3>
               <GoalBar label="Weekly Streak Goal" value={streak} max={s?.weekly_goal ?? 5} colorClass="bg-gradient-to-r from-brand-400 to-brand-500" />
               <GoalBar label="Monthly Challenge Goal" value={s?.challenges_completed ?? 0} max={s?.monthly_goal ?? 20} colorClass="bg-gradient-to-r from-primary-400 to-primary-600" />
@@ -349,7 +349,7 @@ function GamificationPage() {
             className="bg-white dark:bg-gray-900 rounded-card-lg border border-neutral-200 dark:border-gray-800 p-6 space-y-4 shadow-sm">
             <div className="flex items-center justify-between">
               <h3 className="text-s-semibold text-txt-headings dark:text-white flex items-center gap-2">
-                <Award className="h-4 w-4 text-warning-bold" /> Badge Collection
+                <Award className="h-5 w-5 text-warning-bold" /> Badge Collection
               </h3>
               <span className="text-caption-semibold text-brand-600 bg-brand-100 px-2.5 py-1 rounded-full">
                 {badges.length}/{ALL_BADGES.length} unlocked

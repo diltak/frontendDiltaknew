@@ -80,12 +80,12 @@ export default function PhysicalHealthPage() {
 
       {/* Tabs Navigation */}
       <div className="overflow-hidden rounded-t-lg border-b border-border bg-background shadow-sm">
-        <div className="flex overflow-x-auto scrollbar-hide px-0.5 sm:px-1 pt-1">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide px-0.5 sm:px-1 pt-1">
           {TABS.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`whitespace-nowrap border-b-2 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium transition-all duration-200 ${
+              className={`whitespace-nowrap border-b-2 px-5 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
                   ? "border-primary text-primary bg-primary/5"
                   : "border-transparent text-muted-foreground hover:border-border hover:bg-muted/50 hover:text-foreground"

@@ -107,7 +107,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordM
                       onClick={handleTryDifferentEmail}
                       className="w-full flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors"
                     >
-                      <ArrowLeft className="h-4 w-4" />
+                      <ArrowLeft className="h-5 w-5" />
                       Try Different Email
                     </button>
                   </div>
@@ -167,7 +167,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }: ForgotPasswordM
                       >
                         {loading ? (
                           <div className="flex items-center space-x-2">
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader2 className="h-5 w-5 animate-spin" />
                             <span>Sending...</span>
                           </div>
                         ) : 'Send Link'}

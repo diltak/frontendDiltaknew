@@ -1059,7 +1059,7 @@ export default function NewSaathiPage() {
               <Brain className="h-5 w-5 text-white" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100 truncate">New Saathi</h1>
+              <h1 className="text-xs sm:text-sm font-bold text-gray-900 dark:text-gray-100 truncate"> Saathi</h1>
               <p className="text-[9px] sm:text-[10px] text-gray-400 hidden sm:block">Mental Wellness · Uma Pipeline</p>
             </div>
             {messages.length > 0 && !sessionEnded && (
@@ -1165,7 +1165,7 @@ export default function NewSaathiPage() {
               </div>
               <div className="text-center">
                 <h2 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">
-                  Hi{user?.first_name ? `, ${user.first_name}` : ""}! I'm New Saathi
+                  Hi{user?.first_name ? `, ${user.first_name}` : ""}! I'm Saathi
                 </h2>
                 <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 max-w-xs">
                   Powered by the Uma pipeline — share what's on your mind.
@@ -1456,8 +1456,8 @@ export default function NewSaathiPage() {
                     : "bg-violet-600 hover:bg-violet-700"
                 )}>
                 {isSttRecording
-                  ? <Square className="h-4 w-4 sm:h-5 sm:w-5 text-white" fill="white" />
-                  : <Mic className="h-4 w-4 sm:h-5 sm:w-5 text-white" strokeWidth={2.5} />}
+                  ? <Square className="h-5 w-5 sm:h-5 sm:w-5 text-white" fill="white" />
+                  : <Mic className="h-5 w-5 sm:h-5 sm:w-5 text-white" strokeWidth={2.5} />}
               </button>
 
               {/* Send button */}
@@ -2045,7 +2045,7 @@ export default function NewSaathiPage() {
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <span>🌿</span>
-              Welcome to New Saathi!
+              Welcome to Saathi!
             </DialogTitle>
           </DialogHeader>
           <div className="pt-1">
@@ -2054,7 +2054,7 @@ export default function NewSaathiPage() {
             </p>
             <div className="border-t border-gray-100 dark:border-gray-700 mb-4" />
             <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed mb-6">
-              New Saathi is here to listen and support you whenever you need it.<br />
+               Saathi is here to listen and support you whenever you need it.<br />
               Share how you&apos;re feeling, ask questions, or explore simple ways to reduce stress and feel better.
             </p>
             <div className="flex justify-end">

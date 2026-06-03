@@ -121,7 +121,7 @@ export default function StressTab() {
         </div>
         <div className="flex justify-end">
           <button type="submit" disabled={scanning} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60">
-            {scanning ? <><Loader2 className="h-4 w-4 animate-spin" />Logging…</> : <><Brain className="h-4 w-4" />Log Scan</>}
+            {scanning ? <><Loader2 className="h-5 w-5 animate-spin" />Logging…</> : <><Brain className="h-5 w-5" />Log Scan</>}
           </button>
         </div>
       </form>
@@ -144,7 +144,7 @@ export default function StressTab() {
             <input type="range" min={1} max={20} step={1} value={cycles} onChange={e => setCycles(Number(e.target.value))} className="w-full accent-primary" />
           </div>
           <button type="submit" disabled={breathing} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60 flex-shrink-0">
-            {breathing ? <><Loader2 className="h-4 w-4 animate-spin" />Logging…</> : breathDone ? "Logged ✓" : <><Wind className="h-4 w-4" />Log Session</>}
+            {breathing ? <><Loader2 className="h-5 w-5 animate-spin" />Logging…</> : breathDone ? "Logged ✓" : <><Wind className="h-5 w-5" />Log Session</>}
           </button>
         </div>
       </form>

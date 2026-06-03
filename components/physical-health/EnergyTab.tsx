@@ -147,7 +147,7 @@ export default function EnergyTab() {
         </div>
         <div className="flex justify-end">
           <button type="submit" disabled={submitting} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60">
-            {submitting ? <><Loader2 className="h-4 w-4 animate-spin" />Logging…</> : <><Zap className="h-4 w-4" />Log Energy</>}
+            {submitting ? <><Loader2 className="h-5 w-5 animate-spin" />Logging…</> : <><Zap className="h-5 w-5" />Log Energy</>}
           </button>
         </div>
       </form>

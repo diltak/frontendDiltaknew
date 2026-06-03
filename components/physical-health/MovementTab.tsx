@@ -152,7 +152,7 @@ export default function MovementTab() {
         </div>
         <div className="flex justify-end">
           <button type="submit" disabled={submitting} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60">
-            {submitting ? <><Loader2 className="h-4 w-4 animate-spin" />Logging…</> : <><Dumbbell className="h-4 w-4" />Log Activity</>}
+            {submitting ? <><Loader2 className="h-5 w-5 animate-spin" />Logging…</> : <><Dumbbell className="h-5 w-5" />Log Activity</>}
           </button>
         </div>
       </form>

@@ -18,7 +18,7 @@ export default function TermsAndConditionsPage() {
           href="/auth/login"
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-gray-900 rounded-xl transition-all border border-gray-200"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-5 w-5" />
           Back to Login
         </Link>
       </header>
