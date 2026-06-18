@@ -48,10 +48,12 @@ export default function LoginPage() {
         password,
       });
       const access_token: string = loginData.access_token;
+      const refresh_token: string | undefined = loginData.refresh_token;
       if (!access_token) throw new Error('No access token received');
 
-      // Persist token & raw login data immediately
+      // Persist tokens & raw login data immediately
       localStorage.setItem('access_token', access_token);
+      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
       localStorage.setItem('login_data', JSON.stringify(loginData));
 
       // Step 2 — GET /api/auth/me → full profile with role

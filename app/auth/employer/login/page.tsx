@@ -31,7 +31,7 @@ export default function EmployerLoginPage() {
 
     try {
       const response = await axios.post(`${ServerAddress}/auth/login`, { email, password });
-      const { access_token, user } = response.data;
+      const { access_token, refresh_token, user } = response.data;
 
       if (!user || user.role !== 'employer') {
         setError('This login portal is for employers only. Please use the employee login portal.');
@@ -39,6 +39,7 @@ export default function EmployerLoginPage() {
       }
 
       localStorage.setItem('access_token', access_token);
+      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
       localStorage.setItem('user_profile', JSON.stringify(user));
 
       toast.success(`Welcome back, ${user.first_name || user.firstName || 'there'}!`);
