@@ -84,16 +84,16 @@ export default function CallButton({
             className={className}
             disabled={disabled || isInCall}
           >
-            {children || <Phone className="w-4 h-4" />}
+            {children || <Phone className="w-5 h-5" />}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={handleVoiceCall} disabled={isLoading}>
-            <Phone className="w-4 h-4 mr-2" />
+            <Phone className="w-5 h-5 mr-2" />
             Call
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleVideoCall} disabled={isLoading}>
-            <Video className="w-4 h-4 mr-2" />
+            <Video className="w-5 h-5 mr-2" />
             Video Call
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -113,7 +113,7 @@ export default function CallButton({
         {isLoading ? (
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current" />
         ) : (
-          <Phone className="w-4 h-4" />
+          <Phone className="w-5 h-5" />
         )}
         {children && <span className="ml-2">{children}</span>}
       </Button>
@@ -128,7 +128,7 @@ export default function CallButton({
         {isLoading ? (
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current" />
         ) : (
-          <Video className="w-4 h-4" />
+          <Video className="w-5 h-5" />
         )}
       </Button>
     </div>

@@ -157,7 +157,7 @@ export default function PhoneCall({
                 </AvatarFallback>
               </Avatar>
               {callStatus === 'active' && (
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white animate-pulse" />
               )}
             </div>
             
@@ -210,7 +210,7 @@ export default function PhoneCall({
                   className="w-10 h-10 rounded-full"
                   onClick={handleToggleMute}
                 >
-                  {isMuted ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                  {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                 </Button>
 
                 {callType === 'video' && (
@@ -220,7 +220,7 @@ export default function PhoneCall({
                     className="w-10 h-10 rounded-full"
                     onClick={handleToggleVideo}
                   >
-                    {!isVideoOn ? <VideoOff className="w-4 h-4" /> : <Video className="w-4 h-4" />}
+                    {!isVideoOn ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
                   </Button>
                 )}
 
@@ -230,7 +230,7 @@ export default function PhoneCall({
                   className="w-10 h-10 rounded-full"
                   onClick={handleToggleSpeaker}
                 >
-                  {isSpeakerOn ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  {isSpeakerOn ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                 </Button>
               </div>
             </div>
