@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       headers['Content-Type'] = 'application/json';
     }
 
-    const res = await fetch(`${ServerAddress}/api/chat_wrapper`, {
+    const res = await fetch(`${ServerAddress}/chat_wrapper`, {
       method: 'POST',
       headers,
       body,

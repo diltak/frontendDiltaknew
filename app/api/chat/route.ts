@@ -839,7 +839,7 @@ Always include the physical_health_metrics object in your response, even if usin
       if (firebaseToken) {
         backendHeaders['Authorization'] = `Bearer ${firebaseToken}`;
       }
-      const backendRes = await fetch(`${ServerAddress}/api/chat_wrapper`, {
+      const backendRes = await fetch(`${ServerAddress}/chat_wrapper`, {
         method: 'POST',
         headers: backendHeaders,
         body: JSON.stringify({

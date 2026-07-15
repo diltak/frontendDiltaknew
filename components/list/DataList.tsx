@@ -3,6 +3,8 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { ChevronUp, ChevronDown, ChevronsUpDown, Filter, Search, Download, ChevronLeft, ChevronRight, Loader2, Upload, FileSpreadsheet, X, CheckCircle2, AlertCircle, FileDown } from 'lucide-react';
+import axios from 'axios';
+import { toast } from 'sonner';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -40,6 +42,7 @@ export interface DataListProps<T> {
   create_api?: string;
   /** Called after successful import with the parsed rows */
   onImportSuccess?: (rows: Record<string, any>[]) => void;
+  transformResponse?: (response: any) => T[];
 }
 
 // ─── Sort icon ────────────────────────────────────────────────────────────────
@@ -185,10 +188,6 @@ function ImportModal<T extends Record<string, any>>({
       let token: string | null = null;
       try {
         token = localStorage.getItem('access_token');
-        if (!token) {
-          const { auth } = await import('@/lib/firebase');
-          token = (await auth.currentUser?.getIdToken()) ?? null;
-        }
       } catch { /* ignore auth errors */ }
 
       const res = await fetch(create_api, {
@@ -401,6 +400,7 @@ export function DataList<T extends Record<string, any>>({
   is_import = false,
   create_api,
   onImportSuccess,
+  transformResponse,
 }: DataListProps<T>) {
   const [internalData, setInternalData] = useState<T[]>(data);
   const [isLoading, setIsLoading] = useState(false);
@@ -458,8 +458,7 @@ export function DataList<T extends Record<string, any>>({
           headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
 
-        if (!res.ok) throw new Error('Failed to fetch data');
-        const json = await res.json();
+        const resData = response.data;
 
         let fetchedData: T[] = [];
         if (transformResponse) {
@@ -471,7 +470,7 @@ export function DataList<T extends Record<string, any>>({
         } else if (resData.success && resData.data) {
           fetchedData = resData.data;
         } else {
-          const possibleArray = Object.values(json).find(Array.isArray);
+          const possibleArray = Object.values(resData).find(Array.isArray);
           if (possibleArray) fetchedData = possibleArray as T[];
         }
 

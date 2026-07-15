@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { UserPlus, Eye, Users, CheckCircle, ShieldCheck, Briefcase, Trash2, AlertTriangle, X, Loader2 } from 'lucide-react';
 import { useUser } from '@/hooks/use-user';
 import { withAuth } from '@/components/auth/with-auth';
@@ -137,13 +138,9 @@ function EmployeesPage() {
       let token: string | null = null;
       try {
         token = localStorage.getItem('access_token');
-        if (!token) {
-          const { auth } = await import('@/lib/firebase');
-          token = (await auth.currentUser?.getIdToken()) ?? null;
-        }
       } catch { /* ignore auth errors */ }
 
-      const res = await fetch(`${ServerAddress}/api/employees/${uid}`, {
+      const res = await fetch(`${ServerAddress}/employees/${uid}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -241,12 +238,8 @@ function EmployeesPage() {
       render: (_, row) => {
         const isActive = row.isActive !== undefined ? row.isActive : row.is_active;
         return (
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleStatusChange(row, isActive ? "deactivate" : "reactivate");
-            }}
-            className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest transition-all hover:opacity-80 ${
+          <span
+            className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest ${
               isActive !== false ? "text-emerald-600" : "text-gray-400"
             }`}
           >
@@ -258,7 +251,7 @@ function EmployeesPage() {
               }`}
             />
             {isActive !== false ? "Active" : "Inactive"}
-          </button>
+          </span>
         );
       },
     },

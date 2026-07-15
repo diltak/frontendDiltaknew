@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (authHeader) headers['Authorization'] = authHeader;
 
-    const res = await fetch(`${ServerAddress}/api/chat_wrapper/analyze`, {
+    const res = await fetch(`${ServerAddress}/chat_wrapper/analyze`, {
       method: 'POST',
       headers,
       body: JSON.stringify({

@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'message is required' }, { status: 400 });
     }
 
-    const res = await fetch(`${ServerAddress}/api/chat_wrapper/ai-chat`, {
+    const res = await fetch(`${ServerAddress}/chat_wrapper/ai-chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
