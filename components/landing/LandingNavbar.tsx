@@ -71,8 +71,9 @@ export default function LandingNavbar() {
   };
 
   return (
+    <>
     <header
-      className={`sticky top-0 p-20 z-[100] w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 transition-all duration-300 ${
+      className={`p-6 fixed top-0 left-0 right-0 z-[100] w-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200 dark:border-gray-800 transition-all duration-300 ${
         scrolled ? "shadow-lg shadow-black/8 dark:shadow-black/30" : "shadow-sm"
       }`}
     >
@@ -193,7 +194,7 @@ export default function LandingNavbar() {
         </div>
       </div>
 
-      {/* ── Mobile menu (inside header so sticky works) ── */}
+      {/* ── Mobile menu ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -281,5 +282,9 @@ export default function LandingNavbar() {
         )}
       </AnimatePresence>
     </header>
+
+      {/* Spacer to offset fixed navbar height so page content is not hidden behind it */}
+      <div className="h-16" aria-hidden="true" />
+    </>
   );
 }

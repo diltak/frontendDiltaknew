@@ -1,6 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -125,7 +126,7 @@ export default function SaathiPage() {
             SECTION 1 — HERO
             Task 12.1 | Requirements 17.1–17.6, 18.1–18.6
         ════════════════════════════════════════════════════════════════════ */}
-        <section className="py-16 sm:py-20 md:py-24 lg:py-32 xl:py-36">
+        <section className="py-16 sm:py-20 md:py-24 lg:py-32 xl:py-25">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
@@ -147,7 +148,7 @@ export default function SaathiPage() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
-                  className="text-6xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-none mb-4"
+                  className="text-6xl sm:text-7xl lg:text-8xl font-extrabold tracking-tight leading-none mb-2"
                 >
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-500">
                     Saathi
@@ -399,6 +400,211 @@ export default function SaathiPage() {
         </section>
 
         {/* ════════════════════════════════════════════════════════════════════
+            SECTION 2b — SCREENSHOT SHOWCASE
+        ════════════════════════════════════════════════════════════════════ */}
+        <section className="py-16 sm:py-20 md:py-24 lg:py-28 bg-white/60 dark:bg-gray-900/50 backdrop-blur-sm overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            {/* Header */}
+            <motion.div
+              className="text-center mb-12 sm:mb-16"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="inline-block bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 text-sm font-semibold px-4 py-1.5 rounded-full border border-violet-200 dark:border-violet-700 mb-5">
+                See It In Action
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4">
+                Saathi at a{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-amber-500">
+                  Glance
+                </span>
+              </h2>
+              <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                Real screens from the Saathi app — empathetic AI conversations, mood tracking, and personalised wellness insights all in one place.
+              </p>
+            </motion.div>
+
+            {/* ── Row 1: large left screenshot + copy right ── */}
+            <motion.div
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center mb-12 sm:mb-16"
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              {/* Screenshot */}
+              <div className="relative order-1">
+                {/* Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-400/20 to-purple-500/20 rounded-3xl blur-3xl scale-110 pointer-events-none" />
+
+                {/* Browser frame */}
+                <div className="relative rounded-2xl overflow-hidden border border-violet-200/50 dark:border-violet-700/40 shadow-2xl shadow-violet-900/20 bg-gray-950">
+                  {/* Chrome */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 border-b border-gray-800">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-violet-500/80" />
+                    </div>
+                    <div className="flex-1 bg-gray-800 rounded px-3 py-0.5 text-[10px] text-gray-500 ml-2 truncate max-w-[180px]">
+                      app.diltak.ai/saathi
+                    </div>
+                    <div className="flex items-center gap-1 ml-auto">
+                      <div className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+                      <span className="text-[10px] text-gray-500">Live</span>
+                    </div>
+                  </div>
+
+                  {/* Screenshot image */}
+                  <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
+                    <Image
+                      src="/assets/screenShorts/sarthi/sarthi1.png"
+                      alt="Saathi – daily AI check-in and mood tracking screen"
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 560px"
+                      priority
+                    />
+                  </div>
+                </div>
+
+                {/* Floating stat */}
+                <motion.div
+                  className="absolute -top-3 -right-2 sm:-right-5 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm px-3 py-2 rounded-2xl shadow-lg border border-violet-200 dark:border-violet-700"
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">💬</span>
+                    <div>
+                      <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Daily check-ins</p>
+                      <p className="text-sm font-bold text-violet-600 dark:text-violet-400 leading-tight">10K+ / day</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Copy */}
+              <div className="order-2 space-y-5">
+                <div className="inline-flex items-center gap-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-3 py-1.5 rounded-full text-sm font-semibold">
+                  <Heart className="w-4 h-4" />
+                  Daily Wellness Check-In
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                  Start every day with a real conversation about how you feel
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Saathi opens with a warm, empathetic AI check-in — not a cold form. It reads your mood, detects stress patterns, and responds with context-aware support so you never feel alone.
+                </p>
+                <ul className="space-y-2.5">
+                  {[
+                    'Natural language AI conversation — not multiple choice',
+                    'Mood trend visualisation across weeks and months',
+                    'Anonymous — your employer never sees individual data',
+                  ].map((pt) => (
+                    <li key={pt} className="flex items-start gap-2.5 text-sm text-gray-700 dark:text-gray-300">
+                      <CheckCircle className="w-4 h-4 text-violet-500 flex-shrink-0 mt-0.5" />
+                      {pt}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+
+            {/* ── Row 2: copy left + screenshot right ── */}
+            <motion.div
+              className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-14 items-center"
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.1 }}
+            >
+              {/* Copy — shows first on mobile, second on desktop */}
+              <div className="order-2 lg:order-1 space-y-5">
+                <div className="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1.5 rounded-full text-sm font-semibold">
+                  <TrendingUp className="w-4 h-4" />
+                  Wellness Insights & Progress
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                  See your mental wellness journey unfold over time
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Saathi tracks your emotional patterns and turns them into clear, actionable insights. Celebrate your streaks, spot early burnout signals, and see real progress week over week.
+                </p>
+                <ul className="space-y-2.5">
+                  {[
+                    'Visual mood charts and wellness score over time',
+                    'Gamified streaks and milestone rewards to keep you consistent',
+                    'Personalised coping strategies based on your patterns',
+                  ].map((pt) => (
+                    <li key={pt} className="flex items-start gap-2.5 text-sm text-gray-700 dark:text-gray-300">
+                      <CheckCircle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                      {pt}
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-md transition-all duration-300 group"
+                >
+                  Get Started with Saathi
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+
+              {/* Screenshot */}
+              <div className="relative order-1 lg:order-2">
+                {/* Glow */}
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-400/15 to-purple-400/15 rounded-3xl blur-3xl scale-110 pointer-events-none" />
+
+                {/* Browser frame */}
+                <div className="relative rounded-2xl overflow-hidden border border-amber-200/50 dark:border-amber-700/40 shadow-2xl shadow-amber-900/15 bg-gray-950">
+                  <div className="flex items-center gap-2 px-4 py-2.5 bg-gray-900 border-b border-gray-800">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-violet-500/80" />
+                    </div>
+                    <div className="flex-1 bg-gray-800 rounded px-3 py-0.5 text-[10px] text-gray-500 ml-2 truncate max-w-[200px]">
+                      app.diltak.ai/saathi/insights
+                    </div>
+                  </div>
+
+                  <div className="relative w-full" style={{ aspectRatio: '16/10' }}>
+                    <Image
+                      src="/assets/screenShorts/sarthi/sarthi2.png"
+                      alt="Saathi – wellness insights, mood trends and streak tracking"
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 560px"
+                    />
+                  </div>
+                </div>
+
+                {/* Floating streak badge */}
+                <motion.div
+                  className="absolute -bottom-3 -left-2 sm:-left-5 z-10 bg-gradient-to-r from-amber-400 to-amber-500 text-white px-3 py-2 rounded-2xl shadow-lg"
+                  animate={{ y: [0, -5, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">🔥</span>
+                    <div>
+                      <p className="text-[10px] text-amber-100 leading-none">Current streak</p>
+                      <p className="text-sm font-bold leading-tight">7 days</p>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════════════════
             SECTION 3 — HOW SAATHI WORKS (4 steps)
             Task 12.3 | Requirements 20.1–20.5
         ════════════════════════════════════════════════════════════════════ */}
@@ -623,7 +829,7 @@ export default function SaathiPage() {
                   asChild
                   variant="outline"
                   size="lg"
-                  className="border-white/60 text-white hover:bg-white/10 font-semibold px-8 py-3 text-base rounded-xl"
+                  className="border-white/60 bg-violet-700 text-white hover:bg-white/10 font-semibold px-8 py-3 text-base rounded-xl"
                 >
                   <Link href="/products/umang">
                     Learn About Umang
