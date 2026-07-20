@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -133,7 +134,7 @@ export default function UmangPage() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.2 }}
-                  className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-4"
+                  className="text-5xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-2"
                 >
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
                     Umang
@@ -358,179 +359,150 @@ export default function UmangPage() {
           </div>
         </section>
 
-        {/* ── Section 3: Dashboard Preview Section ─────────────────────────── */}
-        <section className="py-16 sm:py-20 md:py-24 lg:py-28">
+        {/* ── Section 3: Screenshot Showcase ──────────────────────────────── */}
+        <section className="py-16 sm:py-20 md:py-24 lg:py-28 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-            {/* Section header */}
-            <div className="text-center mb-12">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center space-x-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full px-4 py-1.5 text-sm font-medium mb-5"
-              >
-                <Activity className="w-5 h-5" />
-                <span>See It In Action</span>
-              </motion.div>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-100 mb-4"
-              >
-                See{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
-                  Umang
-                </span>{' '}
-                in Action
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-              >
-                A live look at the intelligence HR leaders rely on every day
-              </motion.p>
-            </div>
-
-            {/* Large dashboard mockup */}
+            {/* Header */}
             <motion.div
-              initial={{ opacity: 0, y: 40 }}
+              className="text-center mb-12 sm:mb-16"
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="rounded-2xl bg-gray-950 border border-gray-700 shadow-2xl overflow-hidden mb-10"
+              transition={{ duration: 0.6 }}
             >
-              {/* Browser chrome */}
-              <div className="bg-gray-800 border-b border-gray-700 px-5 py-3 flex items-center space-x-2">
-                <div className="flex space-x-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-                  <div className="w-3 h-3 rounded-full bg-violet-500/80" />
-                </div>
-                <div className="ml-3 flex-1 bg-gray-700 rounded-md px-4 py-1 text-xs text-gray-400 max-w-xs">
-                  app.diltak.ai/umang/dashboard
-                </div>
-              </div>
-
-              <div className="p-6 space-y-6">
-                {/* Top KPI row */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {[
-                    { label: 'Wellness Score', value: '82', icon: Activity, color: 'text-violet-400', iconBg: 'bg-violet-900/40' },
-                    { label: 'At-Risk Employees', value: '3', icon: AlertTriangle, color: 'text-amber-400', iconBg: 'bg-amber-900/40' },
-                    { label: 'Avg Engagement', value: '87%', icon: TrendingUp, color: 'text-purple-400', iconBg: 'bg-purple-900/40' },
-                    { label: 'Absence Rate', value: '4.2%', icon: TrendingDown, color: 'text-orange-400', iconBg: 'bg-orange-900/40' },
-                  ].map((kpi) => (
-                    <div key={kpi.label} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-xs text-gray-400 font-medium">{kpi.label}</span>
-                        <div className={`${kpi.iconBg} rounded-lg p-1.5`}>
-                          <kpi.icon className={`w-3.5 h-3.5 ${kpi.color}`} />
-                        </div>
-                      </div>
-                      <div className={`text-2xl font-extrabold ${kpi.color}`}>{kpi.value}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Charts section + AI Recommendations */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                  {/* Bar chart area */}
-                  <div className="lg:col-span-2 bg-gray-800 rounded-xl p-5 border border-gray-700">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-sm text-gray-200 font-semibold">Department Wellness Trends</span>
-                      <span className="text-xs text-gray-500 bg-gray-700 rounded-full px-3 py-1">Last 30 days</span>
-                    </div>
-                    {/* Labelled bar chart */}
-                    <div className="space-y-3">
-                      {[
-                        { name: 'Engineering', score: 88, color: 'from-violet-500 to-violet-400' },
-                        { name: 'Marketing', score: 72, color: 'from-amber-500 to-amber-400' },
-                        { name: 'Operations', score: 81, color: 'from-purple-500 to-purple-400' },
-                        { name: 'Sales', score: 65, color: 'from-orange-500 to-orange-400' },
-                        { name: 'HR', score: 90, color: 'from-violet-600 to-indigo-500' },
-                      ].map((dept) => (
-                        <div key={dept.name} className="flex items-center space-x-3">
-                          <span className="text-xs text-gray-400 w-20 flex-shrink-0">{dept.name}</span>
-                          <div className="flex-1 h-2.5 bg-gray-700 rounded-full overflow-hidden">
-                            <div
-                              className={`h-full rounded-full bg-gradient-to-r ${dept.color}`}
-                              style={{ width: `${dept.score}%` }}
-                            />
-                          </div>
-                          <span className="text-xs text-gray-300 w-8 text-right">{dept.score}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* AI Recommendations panel */}
-                  <div className="bg-gray-800 rounded-xl p-5 border border-gray-700">
-                    <div className="flex items-center space-x-2 mb-4">
-                      <div className="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center">
-                        <Brain className="w-3.5 h-3.5 text-white" />
-                      </div>
-                      <span className="text-sm text-gray-200 font-semibold">AI Recommendations</span>
-                    </div>
-                    <div className="space-y-3">
-                      {[
-                        'Sales team shows rising stress signals — consider flexible deadlines this week.',
-                        'Marketing engagement dropped 12% — schedule a 1:1 check-in with team leads.',
-                        'Engineering wellness at 88% — reinforce current practices as a model.',
-                      ].map((rec, i) => (
-                        <div key={i} className="flex items-start space-x-2">
-                          <div className="w-5 h-5 rounded-full bg-amber-900/40 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <span className="text-amber-400 text-xs font-bold">{i + 1}</span>
-                          </div>
-                          <p className="text-xs text-gray-400 leading-relaxed">{rec}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <span className="inline-block bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-sm font-semibold px-4 py-1.5 rounded-full border border-amber-200 dark:border-amber-700 mb-5">
+                See It In Action
+              </span>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white leading-tight mb-4">
+                Umang at a{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
+                  Glance
+                </span>
+              </h2>
+              <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                Real screens from the Umang dashboard — the intelligence HR leaders use every day to protect workforce mental health at scale.
+              </p>
             </motion.div>
 
-            {/* Feature callouts below mockup */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+            {/* ── Full-width screenshot with callouts ── */}
+            <motion.div
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="relative mb-10 sm:mb-14"
+            >
+              {/* Ambient glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/15 to-violet-400/10 rounded-3xl blur-3xl scale-105 pointer-events-none" />
+
+              {/* Browser frame */}
+              <div className="relative rounded-2xl overflow-hidden border border-amber-200/40 dark:border-amber-700/40 shadow-2xl shadow-amber-900/20 bg-gray-950">
+                {/* Chrome */}
+                <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 border-b border-gray-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-orange-500/80" />
+                  </div>
+                  <div className="flex-1 bg-gray-800 rounded-md px-3 py-1 text-xs text-gray-500 ml-2 max-w-xs truncate">
+                    app.diltak.ai/umang/dashboard
+                  </div>
+                  <div className="flex items-center gap-1.5 ml-auto">
+                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                    <span className="text-xs text-gray-500 hidden sm:inline">Live Analytics</span>
+                  </div>
+                </div>
+
+                {/* Screenshot */}
+                <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+                  <Image
+                    src="/assets/screenShorts/umang/umang1.png"
+                    alt="Umang enterprise mental health analytics dashboard — wellness index, burnout detection and department insights"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 95vw, 1200px"
+                    priority
+                  />
+                </div>
+              </div>
+
+              {/* Floating KPI badge — top right */}
+              <motion.div
+                className="absolute -top-3 right-3 sm:-top-4 sm:-right-4 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm px-3 py-2 rounded-2xl shadow-xl border border-amber-200 dark:border-amber-700"
+                animate={{ y: [0, -7, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
+                    <TrendingDown className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Absence reduction</p>
+                    <p className="text-sm font-bold text-amber-600 dark:text-amber-400 leading-tight">↓ 40% avg</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating alert badge — bottom left */}
+              <motion.div
+                className="absolute -bottom-3 left-3 sm:-bottom-4 sm:-left-4 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm px-3 py-2 rounded-2xl shadow-xl border border-violet-200 dark:border-violet-700"
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+                  <div>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">AI Alert</p>
+                    <p className="text-xs font-semibold text-violet-700 dark:text-violet-300 leading-tight">3 depts flagged</p>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* ── Three callout cards below screenshot ── */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
               {[
                 {
                   icon: Activity,
-                  title: 'Real-time metrics updated every 24 hours',
+                  title: 'Real-time metrics',
+                  desc: 'Wellness score, burnout risk, and engagement updated every 24 hours across all departments.',
                   iconBg: 'bg-amber-100 dark:bg-amber-900/30',
                   iconColor: 'text-amber-600 dark:text-amber-400',
+                  border: 'border-amber-200 dark:border-amber-800',
                 },
                 {
                   icon: Brain,
-                  title: 'AI-powered anomaly detection',
+                  title: 'AI-powered alerts',
+                  desc: 'Machine learning surfaces at-risk teams with recommended interventions — no manual analysis needed.',
                   iconBg: 'bg-violet-100 dark:bg-violet-900/30',
                   iconColor: 'text-violet-600 dark:text-violet-400',
+                  border: 'border-violet-200 dark:border-violet-800',
                 },
                 {
                   icon: Layers,
-                  title: 'Export as branded PDF reports',
+                  title: 'Branded PDF reports',
+                  desc: 'Export executive-ready reports with your organisation\'s branding for board presentations.',
                   iconBg: 'bg-purple-100 dark:bg-purple-900/30',
                   iconColor: 'text-purple-600 dark:text-purple-400',
+                  border: 'border-purple-200 dark:border-purple-800',
                 },
-              ].map((callout, index) => (
+              ].map((c, i) => (
                 <motion.div
-                  key={callout.title}
+                  key={c.title}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: getStepDelay(index, 0.1) }}
-                  className="flex items-center space-x-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm"
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className={`flex items-start gap-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-5 border ${c.border} shadow-sm hover:shadow-md transition-shadow duration-300`}
                 >
-                  <div className={`w-10 h-10 ${callout.iconBg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                    <callout.icon className={`w-5 h-5 ${callout.iconColor}`} />
+                  <div className={`w-10 h-10 ${c.iconBg} rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                    <c.icon className={`w-5 h-5 ${c.iconColor}`} />
                   </div>
-                  <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{callout.title}</p>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm mb-1">{c.title}</h4>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">{c.desc}</p>
+                  </div>
                 </motion.div>
               ))}
             </div>

@@ -98,7 +98,7 @@ export default function HomePage() {
       </div>
 
       {/* 2. Navbar */}
-      <div className="relative z-50">
+      <div className="absolute z-50">
         <LandingNavbar />
       </div>
 
@@ -332,116 +332,312 @@ export default function HomePage() {
       </section>
 
       {/* 5. Products Showcase */}
-      <section className="relative py-16 sm:py-20 md:py-24 lg:py-28 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 sm:py-20 md:py-24 lg:py-28 z-10 overflow-hidden">
+        {/* Subtle section background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-violet-50/40 to-transparent dark:via-violet-950/20 pointer-events-none" />
 
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+          {/* Section header */}
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-16 sm:mb-20"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-semibold px-4 py-1.5 rounded-full border border-purple-200 dark:border-purple-700 mb-4">
+            <span className="inline-block bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-sm font-semibold px-4 py-1.5 rounded-full border border-purple-200 dark:border-purple-700 mb-5">
               Our Products
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-purple-600">
-              Two Products. One Mission.
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight mb-5">
+              Two Products.{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 via-purple-600 to-amber-500">
+                One Mission.
+              </span>
             </h2>
+            <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Whether you&apos;re an individual seeking personal wellness support or an organisation protecting workforce mental health — we have a product built exactly for you.
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* ── Saathi Showcase ────────────────────────────────────────────── */}
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-20 sm:mb-28"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            {/* Left — Copy */}
+            <div className="order-2 lg:order-1 space-y-6">
+              {/* Product badge */}
+              <div className="inline-flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-gradient-to-br from-violet-600 to-purple-700 rounded-xl flex items-center justify-center shadow-md">
+                  <Heart className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-purple-600">
+                  Saathi
+                </span>
+                <span className="text-xs font-semibold bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-2.5 py-1 rounded-full border border-violet-200 dark:border-violet-700">
+                  For Individuals
+                </span>
+              </div>
 
-            {/* Saathi Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0 }}
-              whileHover={{ y: -8 }}
-            >
-              <Card className="h-full bg-gradient-to-br from-violet-50 to-purple-100 dark:from-violet-950/50 dark:to-purple-950/50 border border-violet-200 dark:border-violet-800 shadow-lg rounded-3xl overflow-hidden">
-                <CardContent className="p-8 space-y-5">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-violet-600 to-purple-700 rounded-xl flex items-center justify-center shadow-md">
-                      <Heart className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-purple-600">
-                      Saathi
-                    </h3>
-                  </div>
-                  <p className="text-base font-semibold text-violet-700 dark:text-violet-300">
-                    Your AI-Powered Mental Wellness Companion
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    Empathetic AI check-ins, peer community support, and personalised coping strategies — designed for employees in enterprise, education, and healthcare.
-                  </p>
-                  <ul className="space-y-2">
-                    {['24/7 conversational AI check-ins', 'Anonymous peer community', 'Personalised coping strategies'].map((f) => (
-                      <li key={f} className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
-                        <CheckCircle className="w-5 h-5 text-violet-600 dark:text-violet-400 flex-shrink-0" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    asChild
-                    className="bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white rounded-xl font-semibold shadow-md"
-                  >
-                    <Link href="/products/saathi" className="flex items-center space-x-2">
-                      <span>Learn More</span>
-                      <ChevronRight className="w-5 h-5" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                Your AI-Powered Mental Wellness Companion
+              </h3>
 
-            {/* Umang Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              whileHover={{ y: -8 }}
-            >
-              <Card className="h-full bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-200 dark:border-amber-800 shadow-lg rounded-3xl overflow-hidden">
-                <CardContent className="p-8 space-y-5">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
-                      <BarChart2 className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
-                      Umang
-                    </h3>
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base">
+                Saathi is your personal mental wellness partner — empathetic, always on, and completely anonymous. Have a real conversation about how you&apos;re feeling, get personalised coping strategies, and connect with peers who understand.
+              </p>
+
+              <ul className="space-y-3">
+                {[
+                  { label: 'Daily AI mood check-ins with empathetic conversations', emoji: '💬' },
+                  { label: 'Anonymous peer support community — zero stigma', emoji: '🛡️' },
+                  { label: 'Personalised coping plans matched to your triggers', emoji: '🎯' },
+                  { label: 'On-demand licensed therapist connections', emoji: '👨‍⚕️' },
+                  { label: 'Gamified wellness streaks & milestone rewards', emoji: '🏆' },
+                ].map(({ label, emoji }) => (
+                  <li key={label} className="flex items-start gap-3">
+                    <span className="text-lg leading-none mt-0.5 flex-shrink-0">{emoji}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Link
+                  href="/products/saathi"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-700 hover:from-violet-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-violet-300/40 dark:hover:shadow-violet-900/40 transition-all duration-300 text-sm group"
+                >
+                  <span>Explore Saathi</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center border-2 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-900/30 px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-sm"
+                >
+                  Request a Demo
+                </Link>
+              </div>
+            </div>
+
+            {/* Right — Screenshots */}
+            <div className="order-1 lg:order-2 relative">
+              {/* Glow behind screenshots */}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-400/20 to-purple-400/20 rounded-3xl blur-3xl scale-110 pointer-events-none" />
+
+              {/* Browser-style frame */}
+              <div className="relative bg-gray-950 rounded-2xl shadow-2xl shadow-violet-900/30 overflow-hidden border border-violet-200/30 dark:border-violet-700/40">
+                {/* Browser chrome */}
+                <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 border-b border-gray-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-violet-500/80" />
                   </div>
-                  <p className="text-base font-semibold text-amber-700 dark:text-amber-300">
-                    Enterprise Mental Health Analytics
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                    Real-time burnout detection, ROI analytics, and HR insights — helping leadership teams protect workforce mental health at scale.
-                  </p>
-                  <ul className="space-y-2">
-                    {['Real-time burnout detection', 'Anonymous department analytics', 'ROI & HR reporting'].map((f) => (
-                      <li key={f} className="flex items-center space-x-2 text-sm text-gray-700 dark:text-gray-300">
-                        <CheckCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Button
-                    asChild
-                    className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl font-semibold shadow-md"
-                  >
-                    <Link href="/products/umang" className="flex items-center space-x-2">
-                      <span>Learn More</span>
-                      <ChevronRight className="w-5 h-5" />
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
+                  <div className="flex-1 bg-gray-800 rounded-md px-3 py-1 text-[11px] text-gray-500 ml-2 max-w-[200px] truncate">
+                    app.diltak.ai/saathi
+                  </div>
+                  <div className="flex items-center gap-1 ml-auto">
+                    <div className="w-2 h-2 rounded-full bg-violet-500 animate-pulse" />
+                    <span className="text-[10px] text-gray-500">Live</span>
+                  </div>
+                </div>
+
+                {/* Primary screenshot */}
+                <div className="relative w-full aspect-[16/10] overflow-hidden">
+                  <Image
+                    src="/assets/screenShorts/sarthi/sarthi1.png"
+                    alt="Saathi AI mental wellness companion — daily check-in screen"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                  />
+                  {/* Gradient overlay at bottom for second screenshot peek */}
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-950 to-transparent" />
+                </div>
+              </div>
+
+              {/* Floating second screenshot — offset card */}
+              <motion.div
+                className="absolute -bottom-6 -right-3 sm:-right-6 w-2/5 sm:w-[45%] bg-gray-950 rounded-xl shadow-2xl shadow-violet-900/40 overflow-hidden border border-violet-300/30 dark:border-violet-700/50 z-10"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <div className="flex items-center gap-1 px-2.5 py-2 bg-gray-900 border-b border-gray-800">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 rounded-full bg-red-500/70" />
+                    <div className="w-2 h-2 rounded-full bg-amber-500/70" />
+                    <div className="w-2 h-2 rounded-full bg-violet-500/70" />
+                  </div>
+                </div>
+                <div className="relative w-full aspect-[4/3] overflow-hidden">
+                  <Image
+                    src="/assets/screenShorts/sarthi/sarthi2.png"
+                    alt="Saathi AI — mood tracking and wellness insights"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 40vw, 280px"
+                  />
+                </div>
+              </motion.div>
+
+              {/* Floating stat badge */}
+              <motion.div
+                className="absolute -top-4 -left-2 sm:-left-6 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md px-3 py-2.5 rounded-2xl shadow-xl border border-violet-200 dark:border-violet-700"
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 bg-violet-100 dark:bg-violet-900/40 rounded-lg flex items-center justify-center">
+                    <Heart className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Daily check-ins</p>
+                    <p className="text-sm font-bold text-violet-600 dark:text-violet-400 leading-tight">10K+ / day</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-violet-200 dark:via-violet-800 to-transparent mb-20 sm:mb-28" />
+
+          {/* ── Umang Showcase ─────────────────────────────────────────────── */}
+          <motion.div
+            className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            {/* Left — Screenshot */}
+            <div className="relative order-1">
+              {/* Glow behind */}
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-400/15 to-orange-400/15 rounded-3xl blur-3xl scale-110 pointer-events-none" />
+
+              {/* Main dashboard frame */}
+              <div className="relative bg-gray-950 rounded-2xl shadow-2xl shadow-amber-900/20 overflow-hidden border border-amber-200/30 dark:border-amber-700/40">
+                {/* Browser chrome */}
+                <div className="flex items-center gap-2 px-4 py-3 bg-gray-900 border-b border-gray-800">
+                  <div className="flex gap-1.5">
+                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500/80" />
+                    <div className="w-3 h-3 rounded-full bg-orange-500/80" />
+                  </div>
+                  <div className="flex-1 bg-gray-800 rounded-md px-3 py-1 text-[11px] text-gray-500 ml-2 max-w-[220px] truncate">
+                    app.diltak.ai/umang/dashboard
+                  </div>
+                  <div className="flex items-center gap-1 ml-auto">
+                    <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                    <span className="text-[10px] text-gray-500">Live</span>
+                  </div>
+                </div>
+
+                <div className="relative w-full aspect-[16/10] overflow-hidden">
+                  <Image
+                    src="/assets/screenShorts/umang/umang1.png"
+                    alt="Umang enterprise mental health analytics dashboard — wellness index and burnout detection"
+                    fill
+                    className="object-cover object-top"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 600px"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-950 to-transparent" />
+                </div>
+              </div>
+
+              {/* Floating KPI badge — top right */}
+              <motion.div
+                className="absolute -top-4 -right-2 sm:-right-6 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md px-3 py-2.5 rounded-2xl shadow-xl border border-amber-200 dark:border-amber-700"
+                animate={{ y: [0, -7, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
+                    <BarChart2 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">Absence reduction</p>
+                    <p className="text-sm font-bold text-amber-600 dark:text-amber-400 leading-tight">↓ 40% avg</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Floating alert badge — bottom left */}
+              <motion.div
+                className="absolute -bottom-4 -left-2 sm:-left-6 z-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md px-3 py-2.5 rounded-2xl shadow-xl border border-orange-200 dark:border-orange-700"
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+                  <div>
+                    <p className="text-[10px] text-gray-500 dark:text-gray-400 leading-none">AI Wellness Alert</p>
+                    <p className="text-xs font-semibold text-orange-600 dark:text-orange-400 leading-tight">3 depts need attention</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right — Copy */}
+            <div className="order-2 space-y-6">
+              {/* Product badge */}
+              <div className="inline-flex items-center gap-2.5">
+                <div className="w-9 h-9 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-md">
+                  <BarChart2 className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-500">
+                  Umang
+                </span>
+                <span className="text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-700">
+                  For Enterprises
+                </span>
+              </div>
+
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
+                Enterprise Mental Health Intelligence Dashboard
+              </h3>
+
+              <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base">
+                Umang gives HR leaders and CHROs a real-time view of workforce mental wellness. Detect burnout risk weeks in advance, understand department-level trends, and act on AI-recommended interventions — all without compromising employee anonymity.
+              </p>
+
+              <ul className="space-y-3">
+                {[
+                  { label: 'Real-time organisational wellness index updated daily', emoji: '📊' },
+                  { label: 'Predictive burnout detection 3–4 weeks in advance', emoji: '🔮' },
+                  { label: 'Anonymous department analytics — no individual exposure', emoji: '🔒' },
+                  { label: 'ROI reporting: absenteeism, productivity & retention', emoji: '💼' },
+                  { label: 'HRIS integration: Workday, SAP, BambooHR and more', emoji: '🔗' },
+                ].map(({ label, emoji }) => (
+                  <li key={label} className="flex items-start gap-3">
+                    <span className="text-lg leading-none mt-0.5 flex-shrink-0">{emoji}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{label}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Link
+                  href="/products/umang"
+                  className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-amber-300/40 dark:hover:shadow-amber-900/40 transition-all duration-300 text-sm group"
+                >
+                  <span>Explore Umang</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center justify-center border-2 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-900/30 px-6 py-3 rounded-xl font-semibold transition-all duration-300 text-sm"
+                >
+                  Schedule a Demo
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+
         </div>
       </section>
 
@@ -638,8 +834,8 @@ export default function HomePage() {
           <WellnessHero />
         </div>
         <WellnessFeatures />
-        <WellnessResources />
-        <WellnessStats />
+        {/* <WellnessResources /> */}
+        {/* <WellnessStats /> */}
       </div>
 
       {/* 11. CTA Banner Section */}
@@ -672,7 +868,7 @@ export default function HomePage() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="border-2 border-white text-white hover:bg-white/10 font-semibold px-8 py-6 rounded-xl text-base transition-all duration-300"
+                  className="border-2 border-white text-white bg-white/10 hover:bg-white/10 font-semibold px-8 py-6 rounded-xl text-base transition-all duration-300"
                 >
                   <Link href="/wellness-hub">Explore the Platform</Link>
                 </Button>

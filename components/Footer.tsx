@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { Sparkles, Mail, ArrowRight, Twitter, Linkedin, Github, Heart, Shield, Lock } from 'lucide-react';
+import { Sparkles, Mail, ArrowRight, Twitter, Linkedin, Github, Heart, Shield, Lock, Facebook, Instagram } from 'lucide-react';
 import { useModal } from '@/contexts/modal-context';
 
 const productLinks = [
@@ -84,9 +84,9 @@ export default function Footer() {
             {/* Social icons */}
             <div className="flex items-center space-x-3">
               {[
-                { icon: Twitter, href: '#', label: 'Twitter' },
-                { icon: Linkedin, href: 'https://www.linkedin.com/company/diltak', label: 'LinkedIn' },
-                { icon: Github, href: '#', label: 'GitHub' },
+                { icon: Facebook, href: 'https://www.facebook.com/share/1DDjrqiwBi/?mibextid=wwXIfr', label: 'Facebook' },
+                { icon: Linkedin, href: 'https://www.linkedin.com/company/diltak-ai/', label: 'LinkedIn' },
+                { icon: Instagram, href: 'https://www.instagram.com/diltak.ai?utm_source=qr', label: 'Instagram' },
               ].map(({ icon: Icon, href, label }) => (
                 <a
                   key={label}
