@@ -11,8 +11,8 @@ import {
   Upload,
   UploadCloud,
 } from "lucide-react";
-import axios from "axios";
 import { toast } from "@/hooks/use-toast";
+import { axiosInstance } from "@/lib/api-client";
 import ServerAddress from "@/constent/ServerAddress";
 import type {
   MedicalDocumentDetail,
@@ -99,19 +99,16 @@ export default function MedicalDocsTab() {
   >({});
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Ref for the hidden file input — needed for production-safe click trigger
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const pollersRef = useRef<Record<string, ReturnType<typeof setInterval>>>({});
 
   const loadList = useCallback(async () => {
     setLoadingList(true);
     try {
-      const token = localStorage.getItem('access_token');
-      const response = await axios.get(`${ServerAddress}/physical-health/medical`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      });
-      
+      const response = await axiosInstance.get(
+        `${ServerAddress}/physical-health/medical`,
+      );
       if (response.data.success) {
         setDocs(response.data.documents || []);
       } else {
@@ -141,24 +138,16 @@ export default function MedicalDocsTab() {
   };
 
   const getDocumentStatus = async (docId: string) => {
-    const token = localStorage.getItem('access_token');
-    const response = await axios.get(`${ServerAddress}/physical-health/medical/${docId}/status`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-    });
+    const response = await axiosInstance.get(
+      `${ServerAddress}/physical-health/medical/${docId}/status`,
+    );
     return response.data;
   };
 
   const getDocumentDetail = async (docId: string) => {
-    const token = localStorage.getItem('access_token');
-    const response = await axios.get(`${ServerAddress}/physical-health/medical/${docId}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-    });
+    const response = await axiosInstance.get(
+      `${ServerAddress}/physical-health/medical/${docId}`,
+    );
     return response.data;
   };
 
@@ -255,19 +244,17 @@ export default function MedicalDocsTab() {
     }
     setUploading(true);
     try {
-      const token = localStorage.getItem('access_token');
       const formData = new FormData();
       formData.append('file', file);
       formData.append('report_type', reportType);
       if (reportDate) formData.append('report_date', reportDate);
       if (facility.trim()) formData.append('issuing_facility', facility.trim());
 
-      const response = await axios.post(`${ServerAddress}/physical-health/medical/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      });
+      const response = await axiosInstance.post(
+        `${ServerAddress}/physical-health/medical/upload`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } },
+      );
 
       if (response.data.success) {
         toast({
@@ -317,13 +304,9 @@ export default function MedicalDocsTab() {
     if (!confirm("Delete this document? This cannot be undone.")) return;
     setDeletingId(docId);
     try {
-      const token = localStorage.getItem('access_token');
-      await axios.delete(`${ServerAddress}/physical-health/medical/${docId}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token && { Authorization: `Bearer ${token}` }),
-        },
-      });
+      await axiosInstance.delete(
+        `${ServerAddress}/physical-health/medical/${docId}`,
+      );
       
       stopPoller(docId);
       setDocs((prev) => prev.filter((d) => d.doc_id !== docId));

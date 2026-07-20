@@ -440,7 +440,7 @@ export default function CommunityFeed({ user }: { user: User }) {
 
           {/* Refresh */}
           <button onClick={fetchPosts} className="p-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-400 hover:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shadow-sm">
-            <RefreshCw className="h-4 w-4" />
+            <RefreshCw className="h-5 w-5" />
           </button>
         </div>
       </div>

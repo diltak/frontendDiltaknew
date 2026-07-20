@@ -163,7 +163,7 @@ export default function VoiceCallUI({
             <div className="text-center mt-2">
               <p className="text-white text-3xl font-bold tracking-tight">Saathi</p>
               <div className="flex items-center justify-center gap-1.5 mt-2">
-                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <Sparkles className="w-5 h-5 text-emerald-400" />
                 <p className="text-white/60 text-sm font-medium">Your AI Wellness Companion</p>
               </div>
             </div>

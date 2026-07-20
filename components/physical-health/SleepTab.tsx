@@ -1,285 +1,166 @@
 "use client";
 
-import { useState } from "react";
-import { Coffee, Loader2, Smartphone, Sun, Thermometer } from "lucide-react";
-import { usePhysicalHealth } from "@/hooks/use-physical-health";
-import type { TrendPeriod } from "@/types/physical-health";
+import { useEffect, useState } from "react";
+import { Loader2, Moon, Plus } from "lucide-react";
+import axios from "axios";
+import { toast } from "@/hooks/use-toast";
+import ServerAddress from "@/constent/ServerAddress";
+import type { SleepLogResponse, SleepTrendsResponse } from "@/types/physical-health";
 
-const PERIODS: { value: TrendPeriod; label: string }[] = [
-  { value: "7d", label: "7D" },
-  { value: "14d", label: "14D" },
-  { value: "30d", label: "30D" },
-  { value: "90d", label: "90D" },
-];
-
-const IMPROVEMENT_TIPS = [
-  {
-    icon: Smartphone,
-    title: "Digital sunset protocol",
-    description:
-      "Stop all screens 60 minutes before bed. Blue light suppresses melatonin production by up to 50%, delaying your natural sleep onset by 1-2 hours.",
-    color: "text-blue-600 dark:text-blue-400",
-    bg: "bg-blue-50 dark:bg-blue-950/20",
-  },
-  {
-    icon: Thermometer,
-    title: "Room temperature",
-    description:
-      "The ideal sleep temperature is 18-20°C (65-68°F). A cooler room signals the brain to lower core body temperature, triggering deeper sleep faster.",
-    color: "text-cyan-600 dark:text-cyan-400",
-    bg: "bg-cyan-50 dark:bg-cyan-950/20",
-  },
-  {
-    icon: Coffee,
-    title: "Caffeine cutoff",
-    description:
-      "Caffeine has a 6-hour half-life. Your 4 PM coffee is still 25% active at 10 PM. Move your last caffeine intake before 2 PM for noticeably better sleep quality.",
-    color: "text-amber-600 dark:text-amber-400",
-    bg: "bg-amber-50 dark:bg-amber-950/20",
-  },
-  {
-    icon: Sun,
-    title: "Morning light exposure",
-    description:
-      "10 minutes of natural light within 30 minutes of waking sets your circadian clock and improves sleep quality that same night by strengthening your melatonin cycle.",
-    color: "text-yellow-600 dark:text-yellow-400",
-    bg: "bg-yellow-50 dark:bg-yellow-950/20",
-  },
-];
-
-function hoursColor(h: number): string {
-  if (h >= 7) return "bg-green-500";
-  if (h >= 6) return "bg-yellow-500";
-  return "bg-red-500";
+function authHeaders() {
+  const token = localStorage.getItem("access_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-function hoursStatus(h: number | null | undefined): string {
-  if (h == null) return "No data";
-  if (h >= 7) return "On target";
-  if (h >= 6) return "Slightly low";
-  return "Low";
+function fmt(iso: string) {
+  try { return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric" }); }
+  catch { return iso; }
 }
 
-function statusColor(h: number | null | undefined): string {
-  if (h == null) return "text-gray-400";
-  if (h >= 7) return "text-green-600 dark:text-green-400";
-  if (h >= 6) return "text-yellow-600 dark:text-yellow-400";
-  return "text-red-600 dark:text-red-400";
-}
-
-function formatDay(iso: string): string {
-  try {
-    return new Date(iso).toLocaleDateString(undefined, { weekday: "short" });
-  } catch {
-    return iso.slice(5, 10);
-  }
+function scoreColor(s: number) {
+  if (s >= 7) return "text-success";
+  if (s >= 5) return "text-warning";
+  return "text-destructive";
 }
 
 export default function SleepTab() {
-  const [period, setPeriod] = useState<TrendPeriod>("30d");
-  const { trends, trendsLoading, refreshTrends } = usePhysicalHealth({ period });
+  const [trends, setTrends] = useState<SleepTrendsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [lastLog, setLastLog] = useState<SleepLogResponse | null>(null);
 
-  const onSelectPeriod = (p: TrendPeriod) => {
-    setPeriod(p);
-    refreshTrends(p);
+  // form
+  const [bedtime, setBedtime] = useState("");
+  const [wakeTime, setWakeTime] = useState("");
+  const [quality, setQuality] = useState(3);
+  const [interruptions, setInterruptions] = useState(0);
+  const [dreamRecall, setDreamRecall] = useState(false);
+  const [notes, setNotes] = useState("");
+
+  const fetchTrends = async () => {
+    try {
+      const res = await axios.get(`${ServerAddress}/physical-health/sleep/trends`, { params: { days: 14 }, headers: authHeaders() });
+      setTrends(res.data);
+    } catch { setTrends(null); }
+    finally { setLoading(false); }
   };
 
-  const maxHours = 9;
-  const points = trends?.data_points ?? [];
-  const sleepPoints = points.filter((p) => p.sleep_hours != null);
-  const latest = sleepPoints[sleepPoints.length - 1];
-  const avgHours = trends?.averages.sleep_hours ?? null;
-  const avgQuality = trends?.averages.sleep_quality ?? null;
+  useEffect(() => { fetchTrends(); }, []);
 
-  const stats = [
-    {
-      label: "Last logged",
-      value: latest?.sleep_hours != null ? latest.sleep_hours.toFixed(1) : "—",
-      unit: "hrs",
-      status: hoursStatus(latest?.sleep_hours ?? null),
-      statusColor: statusColor(latest?.sleep_hours ?? null),
-    },
-    {
-      label: "Avg sleep hours",
-      value: avgHours != null ? avgHours.toFixed(1) : "—",
-      unit: "hrs",
-      status: hoursStatus(avgHours),
-      statusColor: statusColor(avgHours),
-    },
-    {
-      label: "Avg sleep quality",
-      value: avgQuality != null ? avgQuality.toFixed(1) : "—",
-      unit: "/10",
-      status:
-        avgQuality == null
-          ? "No data"
-          : avgQuality >= 7
-            ? "Good"
-            : avgQuality >= 5
-              ? "Fair"
-              : "Low",
-      statusColor:
-        avgQuality == null
-          ? "text-gray-400"
-          : avgQuality >= 7
-            ? "text-green-600 dark:text-green-400"
-            : avgQuality >= 5
-              ? "text-yellow-600 dark:text-yellow-400"
-              : "text-red-600 dark:text-red-400",
-    },
-    {
-      label: "Check-ins logged",
-      value: String(trends?.total_checkins ?? 0),
-      unit: "",
-      status: `over ${period}`,
-      statusColor: "text-gray-500 dark:text-gray-400",
-    },
-  ];
-
-  // Week view — last 7 points with sleep_hours
-  const weekPoints = sleepPoints.slice(-7);
+  const onLog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bedtime || !wakeTime) { toast({ title: "Enter bedtime and wake time", variant: "destructive" }); return; }
+    setSubmitting(true);
+    try {
+      const res = await axios.post<SleepLogResponse>(
+        `${ServerAddress}/physical-health/sleep/log`,
+        { bedtime: new Date(bedtime).toISOString(), wake_time: new Date(wakeTime).toISOString(), quality_score: quality, interruptions, dream_recall: dreamRecall, notes: notes || undefined },
+        { headers: authHeaders() }
+      );
+      setLastLog(res.data);
+      toast({ title: `Sleep logged — ${res.data.duration_hours.toFixed(1)}h, score ${res.data.sleep_score.toFixed(1)}` });
+      setBedtime(""); setWakeTime(""); setQuality(3); setInterruptions(0); setDreamRecall(false); setNotes("");
+      await fetchTrends();
+    } catch (err) {
+      toast({ title: "Log failed", description: err instanceof Error ? err.message : "Unknown error", variant: "destructive" });
+    } finally { setSubmitting(false); }
+  };
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100">
-          Sleep trends
-        </h3>
-        <div className="inline-flex items-center gap-1 bg-white dark:bg-gray-900 rounded-xl p-1 border border-gray-100 dark:border-gray-800 shadow-sm">
-          {PERIODS.map((p) => (
-            <button
-              key={p.value}
-              type="button"
-              onClick={() => onSelectPeriod(p.value)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-                period === p.value
-                  ? "bg-blue-500 text-white"
-                  : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
-              }`}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {trendsLoading && !trends ? (
-        <div className="py-10 flex items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-        </div>
-      ) : !trends || trends.total_checkins === 0 ? (
-        <div className="bg-white dark:bg-gray-900 rounded-2xl p-8 border border-gray-100 dark:border-gray-800 shadow-sm text-center">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            No check-ins yet. Head to the Daily Check-in tab and start tracking
-            to see sleep trends here.
-          </p>
-        </div>
-      ) : (
-        <>
-          {/* Stats cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((s) => (
-              <div
-                key={s.label}
-                className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm"
-              >
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {s.label}
-                </span>
-                <div className="flex items-baseline gap-1 mt-1">
-                  <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-                    {s.value}
-                  </span>
-                  <span className="text-sm text-gray-400 dark:text-gray-500">
-                    {s.unit}
-                  </span>
-                </div>
-                <span className={`text-xs ${s.statusColor}`}>{s.status}</span>
-              </div>
-            ))}
+      {/* Trends summary */}
+      {loading ? (
+        <div className="flex justify-center py-10"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>
+      ) : trends && trends.logs.length > 0 ? (
+        <div className="rounded-lg border border-border bg-card p-5 shadow-sm space-y-4">
+          <h3 className="flex items-center gap-2 text-base font-semibold text-foreground"><Moon className="h-5 w-5 text-primary" /> 14-Day Sleep Summary</h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatCell label="Avg Duration" value={`${trends.avg_duration.toFixed(1)}h`} />
+            <StatCell label="Avg Quality" value={`${trends.avg_quality.toFixed(1)}/5`} />
+            <StatCell label="Avg Score" value={trends.avg_score.toFixed(1)} colorClass={scoreColor(trends.avg_score)} />
+            <StatCell label="Weekly Debt" value={`${trends.weekly_debt_hours.toFixed(1)}h`} colorClass={trends.weekly_debt_hours > 2 ? "text-destructive" : "text-success"} />
           </div>
-
-          <div className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm mt-4">
-            <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">
-              Recent sleep pattern
-            </h3>
-            {weekPoints.length === 0 ? (
-              <p className="text-xs text-gray-500 dark:text-gray-400 py-6 text-center">
-                Not enough data to render a pattern yet.
-              </p>
-            ) : (
-              <>
-                <div className="flex items-end justify-between gap-2 h-32">
-                  {weekPoints.map((d) => {
-                    const h = d.sleep_hours ?? 0;
-                    return (
-                      <div
-                        key={d.date}
-                        className="flex flex-col items-center flex-1 gap-1"
-                      >
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400">
-                          {h.toFixed(1)}h
-                        </span>
-                        <div className="w-full flex flex-col justify-end h-24">
-                          <div
-                            className={`w-full rounded-t-md ${hoursColor(h)}`}
-                            style={{ height: `${(h / maxHours) * 100}%` }}
-                          />
-                        </div>
-                        <span className="text-[10px] text-gray-500 dark:text-gray-400">
-                          {formatDay(d.date)}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="flex items-center gap-4 mt-3 text-[10px] text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-green-500" /> 7+ hrs
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-yellow-500" /> 6-7
-                    hrs
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-red-500" /> under 6
-                  </div>
-                </div>
-              </>
-            )}
+          {trends.chronotype && <p className="text-xs text-muted-foreground">Chronotype: <span className="font-medium text-foreground capitalize">{trends.chronotype.replace("_", " ")}</span></p>}
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs min-w-[360px]">
+              <thead><tr className="text-left text-muted-foreground border-b border-border">
+                <th className="py-1.5 pr-3 font-medium">Date</th>
+                <th className="py-1.5 pr-3 font-medium">Duration</th>
+                <th className="py-1.5 pr-3 font-medium">Quality</th>
+                <th className="py-1.5 font-medium">Score</th>
+              </tr></thead>
+              <tbody>
+                {trends.logs.slice(0, 10).map(l => (
+                  <tr key={l.log_id} className="border-b border-border/50">
+                    <td className="py-1.5 pr-3 text-muted-foreground">{fmt(l.bedtime)}</td>
+                    <td className="py-1.5 pr-3 font-medium text-foreground">{l.duration_hours.toFixed(1)}h</td>
+                    <td className="py-1.5 pr-3 text-foreground">{l.quality_score}/5</td>
+                    <td className={`py-1.5 font-semibold ${scoreColor(l.sleep_score)}`}>{l.sleep_score.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </>
+        </div>
+      ) : null}
+
+      {/* Last log result */}
+      {lastLog && (
+        <div className="rounded-lg border border-success/30 bg-success/10 p-4 shadow-sm">
+          <p className="text-sm font-semibold text-foreground">Sleep logged ✓</p>
+          <p className="text-xs text-muted-foreground mt-1">Duration: {lastLog.duration_hours.toFixed(1)}h · Score: {lastLog.sleep_score.toFixed(1)} · Debt: {lastLog.debt_hours?.toFixed(1) ?? 0}h</p>
+        </div>
       )}
 
-      <div className="bg-white dark:bg-gray-900 rounded-2xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm">
-        <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-4">
-          Sleep improvement programme
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {IMPROVEMENT_TIPS.map((tip) => (
-            <div
-              key={tip.title}
-              className="bg-white dark:bg-gray-900 rounded-2xl p-4 border border-gray-100 dark:border-gray-800 shadow-sm"
-            >
-              <div className="flex items-start gap-3">
-                <div
-                  className={`w-9 h-9 rounded-xl ${tip.bg} flex items-center justify-center flex-shrink-0`}
-                >
-                  <tip.icon className={`h-5 w-5 ${tip.color}`} />
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-1">
-                    {tip.title}
-                  </h4>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">
-                    {tip.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+      {/* Log form */}
+      <form onSubmit={onLog} className="rounded-lg border border-border bg-card p-5 shadow-sm space-y-4">
+        <h3 className="flex items-center gap-2 text-base font-semibold text-foreground"><Plus className="h-5 w-5 text-primary" /> Log Sleep Session</h3>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs text-muted-foreground">Bedtime</label>
+            <input type="datetime-local" value={bedtime} onChange={e => setBedtime(e.target.value)} className={inputCls} />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs text-muted-foreground">Wake Time</label>
+            <input type="datetime-local" value={wakeTime} onChange={e => setWakeTime(e.target.value)} className={inputCls} />
+          </div>
         </div>
-      </div>
+        <div>
+          <label className="mb-2 block text-xs text-muted-foreground">Sleep Quality: <span className="font-semibold text-foreground">{quality}/5</span></label>
+          <input type="range" min={1} max={5} step={1} value={quality} onChange={e => setQuality(Number(e.target.value))} className="w-full accent-primary" />
+          <div className="flex justify-between text-[10px] text-muted-foreground mt-1"><span>1 · Terrible</span><span>5 · Excellent</span></div>
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs text-muted-foreground">Interruptions</label>
+            <input type="number" min={0} value={interruptions} onChange={e => setInterruptions(Number(e.target.value))} className={inputCls} />
+          </div>
+          <div className="flex items-center gap-3 pt-5">
+            <input type="checkbox" id="dream" checked={dreamRecall} onChange={e => setDreamRecall(e.target.checked)} className="accent-primary" />
+            <label htmlFor="dream" className="text-sm text-foreground cursor-pointer">Dream recall</label>
+          </div>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs text-muted-foreground">Notes (optional)</label>
+          <textarea value={notes} onChange={e => setNotes(e.target.value)} rows={2} placeholder="e.g. woke up feeling refreshed" className={`${inputCls} resize-none`} />
+        </div>
+        <div className="flex justify-end">
+          <button type="submit" disabled={submitting} className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60">
+            {submitting ? <><Loader2 className="h-5 w-5 animate-spin" />Logging…</> : <><Moon className="h-5 w-5" />Log Sleep</>}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
+
+function StatCell({ label, value, colorClass = "text-foreground" }: { label: string; value: string; colorClass?: string }) {
+  return (
+    <div className="rounded-lg border border-border p-3">
+      <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className={`mt-0.5 text-lg font-bold ${colorClass}`}>{value}</p>
+    </div>
+  );
+}
+
+const inputCls = "w-full rounded-lg border border-input bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground";

@@ -198,7 +198,7 @@ export interface InlineLoaderProps {
 }
 
 export function InlineLoader({ message, size = 'sm', color = 'text-blue-500' }: InlineLoaderProps) {
-  const sizeMap = { xs: 'w-3 h-3', sm: 'w-4 h-4' };
+  const sizeMap = { xs: 'w-3 h-3', sm: 'w-5 h-5' };
   return (
     <div className="flex items-center gap-1.5">
       <Loader2 className={cn('animate-spin flex-shrink-0', sizeMap[size], color)} />

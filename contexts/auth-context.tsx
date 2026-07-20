@@ -51,6 +51,7 @@ function getLocalProfile(): User | null {
 function clearLocalAuth() {
   if (typeof window === 'undefined') return;
   localStorage.removeItem('access_token');
+  localStorage.removeItem('refresh_token');
   localStorage.removeItem('user_profile');
   localStorage.removeItem('login_data');
 }

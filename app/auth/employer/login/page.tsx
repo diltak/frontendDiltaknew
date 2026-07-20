@@ -30,20 +30,53 @@ export default function EmployerLoginPage() {
     setError('');
 
     try {
-      const response = await axios.post(`${ServerAddress}/auth/login`, { email, password });
-      const { access_token, user } = response.data;
+      // Step 1 — get tokens (login endpoint does NOT return a user object)
+      const { data: loginData } = await axios.post(`${ServerAddress}/auth/login`, { email, password });
+      const access_token: string = loginData.access_token;
+      const refresh_token: string | undefined = loginData.refresh_token;
+      if (!access_token) throw new Error('No access token received');
 
-      if (!user || user.role !== 'employer') {
+      // Persist tokens immediately
+      localStorage.setItem('access_token', access_token);
+      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
+
+      // Step 2 — fetch the real profile
+      const { data: meData } = await axios.get(`${ServerAddress}/auth/me`, {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+
+      const rawRole: string = meData?.role ?? '';
+      if (rawRole !== 'employer') {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
         setError('This login portal is for employers only. Please use the employee login portal.');
         return;
       }
 
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('user_profile', JSON.stringify(user));
+      // Step 3 — normalize field names to match app conventions
+      const normalizedProfile = {
+        ...meData,
+        id:           meData?.id           ?? meData?.uid          ?? '',
+        uid:          meData?.uid           ?? '',
+        role:         rawRole,
+        email:        meData?.email         ?? email,
+        company_id:   meData?.company_id    ?? meData?.companyId   ?? '',
+        company_name: meData?.company_name  ?? meData?.companyName ?? '',
+        first_name:   meData?.first_name    ?? (meData?.displayName?.split(' ')?.[0]            ?? ''),
+        last_name:    meData?.last_name     ?? (meData?.displayName?.split(' ')?.slice(1).join(' ') ?? ''),
+        is_active:    meData?.is_active     ?? true,
+        created_at:   meData?.created_at    ?? new Date().toISOString(),
+        updated_at:   meData?.updated_at    ?? new Date().toISOString(),
+      };
 
-      toast.success(`Welcome back, ${user.first_name || user.firstName || 'there'}!`);
+      localStorage.setItem('user_profile', JSON.stringify(normalizedProfile));
+
+      toast.success(`Welcome back, ${normalizedProfile.first_name || normalizedProfile.email || 'there'}!`);
       router.push('/employer/dashboard');
     } catch (err: any) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_profile');
       const msg = err?.response?.data?.message || err?.response?.data?.detail || 'Login failed. Please check your credentials.';
       setError(msg);
     } finally {

@@ -5,6 +5,7 @@ import OpenAI from 'openai';
 import axios from 'axios';
 import type { ChatMessage } from '@/types/index';
 import { getPersonalHistory, formatPersonalHistoryForAI } from '@/lib/reports-service';
+import ServerAddress from '@/constent/ServerAddress';
 
 // File processing utilities
 interface FileAttachment {
@@ -171,9 +172,6 @@ const ASSESSMENT_DATA = {
   }
 };
 
-// Uma (animeshai) agent configuration
-const UMA_API_URL = process.env.UMA_API_URL;
-
 interface UmaChatResponse {
   session_id: string;
   reply: string;
@@ -198,7 +196,7 @@ interface UmaChatResponse {
 
 async function callUmaChat(message: string, sessionId?: string): Promise<UmaChatResponse> {
   try {
-    const response = await axios.post(`${UMA_API_URL}/chat`, {
+    const response = await axios.post(`${ServerAddress}/chat`, {
       message,
       session_id: sessionId || null,
     }, {
@@ -841,7 +839,7 @@ Always include the physical_health_metrics object in your response, even if usin
       if (firebaseToken) {
         backendHeaders['Authorization'] = `Bearer ${firebaseToken}`;
       }
-      const backendRes = await fetch(`${UMA_API_URL}/api/chat_wrapper`, {
+      const backendRes = await fetch(`${ServerAddress}/api/chat_wrapper`, {
         method: 'POST',
         headers: backendHeaders,
         body: JSON.stringify({
@@ -1095,7 +1093,7 @@ Always include the physical_health_metrics object in your response, even if usin
 
       try {
         // Save report via custom backend API
-        const SERVER = process.env.NEXT_PUBLIC_UMA_API_URL?.replace(/\/+$/, '') ?? 'http://127.0.0.1:8000';
+        const SERVER = ServerAddress?.replace(/\/+$/, '') ?? 'http://127.0.0.1:8000';
         await fetch(`${SERVER}/api/reports`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

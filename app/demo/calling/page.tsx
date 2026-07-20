@@ -215,13 +215,13 @@ export default function CallingDemoPage() {
                       <SelectContent>
                         <SelectItem value="voice">
                           <div className="flex items-center">
-                            <Phone className="w-4 h-4 mr-2" />
+                            <Phone className="w-5 h-5 mr-2" />
                             Call
                           </div>
                         </SelectItem>
                         <SelectItem value="video">
                           <div className="flex items-center">
-                            <Video className="w-4 h-4 mr-2" />
+                            <Video className="w-5 h-5 mr-2" />
                             Video
                           </div>
                         </SelectItem>
@@ -238,7 +238,7 @@ export default function CallingDemoPage() {
                       className="flex-1"
                       disabled={!selectedContact.isOnline}
                     >
-                      <Phone className="w-4 h-4 mr-2" />
+                      <Phone className="w-5 h-5 mr-2" />
                       Start {callType === 'video' ? 'Video' : ''} Call
                     </CallButton>
                   </div>
@@ -250,11 +250,11 @@ export default function CallingDemoPage() {
                       showDropdown={true}
                       variant="outline"
                     >
-                      <MoreHorizontal className="w-4 h-4" />
+                      <MoreHorizontal className="w-5 h-5" />
                     </CallButton>
                     
                     <Button variant="outline" size="icon">
-                      <MessageSquare className="w-4 h-4" />
+                      <MessageSquare className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>

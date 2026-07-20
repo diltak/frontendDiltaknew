@@ -2479,7 +2479,7 @@ export default function EmployeeChatPage() {
           >
             <Phone className="h-6 w-6 text-white" />
           </Button>
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping"></div>
+          <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-400 rounded-full animate-ping"></div>
         </motion.div>
       )}
 

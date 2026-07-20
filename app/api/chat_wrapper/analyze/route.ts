@@ -1,14 +1,7 @@
-/**
- * Proxy → Python backend POST /api/chat_wrapper/analyze
- * Standalone chat analysis — generates full LangGraph wellness report
- * without ending a session.
- *
- * Input:  { user_id: string, messages: [{role:"user"|"assistant", content:string}] }
- * Output: { meta, mental_health, physical_health, overall }
- */
+
+import ServerAddress from '@/constent/ServerAddress';
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = process.env.UMA_API_URL || 'http://74.162.66.197';
 
 export async function POST(request: NextRequest) {
   try {
@@ -25,7 +18,7 @@ export async function POST(request: NextRequest) {
     const headers: Record<string, string> = { 'Content-Type': 'application/json' };
     if (authHeader) headers['Authorization'] = authHeader;
 
-    const res = await fetch(`${BACKEND}/api/chat_wrapper/analyze`, {
+    const res = await fetch(`${ServerAddress}/api/chat_wrapper/analyze`, {
       method: 'POST',
       headers,
       body: JSON.stringify({

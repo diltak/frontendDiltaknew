@@ -185,7 +185,7 @@ const WellnessTestimonials = () => {
         </div>
 
         {/* Stats Section */}
-        <motion.div
+        {/* <motion.div
           className="mt-16 grid grid-cols-1 md:grid-cols-4 xl:grid-cols-4 gap-8"
           variants={itemVariants}
         >
@@ -207,10 +207,10 @@ const WellnessTestimonials = () => {
               <div className="text-gray-600">{stat.label}</div>
             </motion.div>
           ))}
-        </motion.div>
+        </motion.div> */}
 
         {/* Bottom CTA */}
-        <motion.div 
+        {/* <motion.div 
           className="mt-16 text-center"
           variants={itemVariants}
         >
@@ -230,7 +230,7 @@ const WellnessTestimonials = () => {
               </button>
             </div>
           </div>
-        </motion.div>
+        </motion.div> */}
       </div>
     </motion.section>
   );

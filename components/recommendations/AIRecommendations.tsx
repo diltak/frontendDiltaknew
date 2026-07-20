@@ -337,7 +337,7 @@ export default function AIRecommendations() {
                     <ul className="space-y-1">
                       {rec.instructions.slice(0, 2).map((step, j) => (
                         <li key={j} className="flex items-start gap-1.5 text-xs text-gray-500 dark:text-gray-400">
-                          <span className="w-4 h-4 rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{j + 1}</span>
+                          <span className="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-800 text-[10px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{j + 1}</span>
                           <span className="line-clamp-1">{step}</span>
                         </li>
                       ))}

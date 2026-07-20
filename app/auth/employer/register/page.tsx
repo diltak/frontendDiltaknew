@@ -95,15 +95,44 @@ export default function EmployerRegisterPage() {
         address: formData.address || null,
       });
 
-      const { access_token, user } = response.data;
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('user_profile', JSON.stringify(user));
-      await refreshUser();
+      // Register endpoint returns only tokens, not a user object
+      const access_token: string = response.data.access_token;
+      const refresh_token: string | undefined = response.data.refresh_token;
+      if (!access_token) throw new Error('No access token received');
 
+      localStorage.setItem('access_token', access_token);
+      if (refresh_token) localStorage.setItem('refresh_token', refresh_token);
+
+      // Fetch the real profile from /auth/me
+      const { data: meData } = await axios.get(`${ServerAddress}/auth/me`, {
+        headers: { Authorization: `Bearer ${access_token}` },
+      });
+
+      const rawRole: string = meData?.role ?? '';
+      const normalizedProfile = {
+        ...meData,
+        id:           meData?.id           ?? meData?.uid          ?? '',
+        uid:          meData?.uid           ?? '',
+        role:         rawRole,
+        email:        meData?.email         ?? formData.businessEmail,
+        company_id:   meData?.company_id    ?? meData?.companyId   ?? '',
+        company_name: meData?.company_name  ?? meData?.companyName ?? formData.companyName,
+        first_name:   meData?.first_name    ?? formData.firstName,
+        last_name:    meData?.last_name     ?? formData.lastName,
+        is_active:    meData?.is_active     ?? true,
+        created_at:   meData?.created_at    ?? new Date().toISOString(),
+        updated_at:   meData?.updated_at    ?? new Date().toISOString(),
+      };
+      localStorage.setItem('user_profile', JSON.stringify(normalizedProfile));
+
+      await refreshUser();
       toast.success('Employer account created successfully!');
       await new Promise(resolve => setTimeout(resolve, 500));
       router.push('/employer/dashboard');
     } catch (err: any) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_profile');
       const msg = err?.response?.data?.message || err?.response?.data?.detail || err?.message || 'An unexpected error occurred. Please try again.';
       setError(msg);
     } finally {
